@@ -1,3 +1,9 @@
 {
-    "app.name": "Chess exercises manager"
+    "app.name": "Chess exercises manager",
+
+    "home_title": "Choose your exercise",
+
+    "sample_exercises": "Sample",
+    "custom_exercises": "Custom",
+    "custom_exercises_root": "exercises://"
 }

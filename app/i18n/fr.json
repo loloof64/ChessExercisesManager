@@ -1,3 +1,9 @@
 {
-    "app.name": "Gestion d'exercices d'échecs"
+    "app.name": "Gestion d'exercices d'échecs",
+
+    "home_title": "Choisissez votre exercice",
+
+    "sample_exercises": "Exemples",
+    "custom_exercises": "Personnels",
+    "custom_exercises_root": "exercices://"
 }

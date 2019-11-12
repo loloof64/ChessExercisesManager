@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="custom_exercises_root">"exercises://"</string>
+  <string name="custom_exercises">"Custom"</string>
+  <string name="sample_exercises">"Sample"</string>
+  <string name="home_title">"Choose your exercise"</string>
   <string name="_app_name_1k3Sbz">"Chess exercises manager"</string>
   <string name="app_name">"Chess exercises manager"</string>
   <string name="title_activity_kimera">"Chess exercises manager"</string>

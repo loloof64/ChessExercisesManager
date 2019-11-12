@@ -12,9 +12,11 @@
   "license": "SEE LICENSE IN <your-license-filename>",
   "repository": "<fill-your-repository-here>",
   "dependencies": {
+    "@nstudio/nativescript-floatingactionbutton": "^1.1.0",
     "nativescript-localize": "^4.2.0",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-vue": "~2.4.0",
+    "nativescript-vue-navigator": "^0.2.0",
     "tns-core-modules": "~6.1.0"
   },
   "devDependencies": {

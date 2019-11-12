@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="custom_exercises_root">"exercices://"</string>
+  <string name="custom_exercises">"Personnels"</string>
+  <string name="sample_exercises">"Exemples"</string>
+  <string name="home_title">"Choisissez votre exercice"</string>
   <string name="_app_name_1k3Sbz">"Gestion d\'exercices d\'échecs"</string>
   <string name="app_name">"Gestion d\'exercices d\'échecs"</string>
   <string name="title_activity_kimera">"Gestion d\'exercices d\'échecs"</string>
