@@ -46,8 +46,16 @@
             return {
                 sampleExercises: [
                     {
+                        path: 'krr_k.pgn',
+                        label: localize('sample_krr_k'),
+                    },
+                    {
                         path: 'kp_kpp.pgn',
                         label: localize('sample_kp_kpp'),
+                    },
+                    {
+                        path: 'kppp_kppp.pgn',
+                        label: localize('sample_kppp_kppp'),
                     },
                 ],
                 busy: false,
