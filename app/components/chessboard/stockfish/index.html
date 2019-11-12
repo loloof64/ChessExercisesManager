@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <script type="text/javascript">
+            var stockfish = new Worker("./stockfish.js.txt");
+            stockfish.onmessage = function onmessage(event) {
+                window.nsWebViewBridge.emit('stockfishOutput', event.data);
+            };
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>

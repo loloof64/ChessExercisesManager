@@ -1,9 +1,33 @@
 {
     "app.name": "Gestion d'exercices d'échecs",
 
+    "ok_button": "D'accord",
+    "cancel_button": "Annuler",
+
     "home_title": "Choisissez votre exercice",
+    "game_title": "Partie en cours",
+
+    "stop_game_title": "Interrompre la partie ?",
+    "confirm_stop_game": "Souhaitez-vous vraiment interrompre la partie ?",
+
+    "exercise_loading_error": "Erreur de chargement d'exercice",
+    "no_fen_line_error": "Aucune ligne FEN dans le PGN !",
+
+    "choose_promotion_piece": "Selectionnez la pièce de promotion :",
+    "queen_promotion": "Dame",
+    "rook_promotion": "Tour",
+    "bishop_promotion": "Fou",
+    "knight_promotion": "Cavalier",
+
+    "game_ending_mate": "Echec et mat",
+    "game_ending_draw_stalemate": "Nulle par pat",
+    "game_ending_draw_missing_material": "Nulle par manque de matériel",
+    "game_ending_draw_three_fold_repetitions": "Nulle par triple répétitions",
+    "game_ending_draw_fifty_moves_rule": "Nulle par la règle des coups",
 
     "sample_exercises": "Exemples",
     "custom_exercises": "Personnels",
-    "custom_exercises_root": "exercices://"
+    "custom_exercises_root": "exercices://",
+
+    "sample_kp_kpp": "Roi+Pion/Roi+2Pions"
 }

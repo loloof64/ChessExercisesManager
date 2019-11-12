@@ -1,9 +1,33 @@
 {
     "app.name": "Chess exercises manager",
 
+    "ok_button": "Ok",
+    "cancel_button": "Cancel",
+
     "home_title": "Choose your exercise",
+    "game_title": "Game in progress",
+
+    "stop_game_title": "Stop game ?",
+    "confirm_stop_game": "Do you really want to stop the game ?",
+
+    "exercise_loading_error": "Exercise loading error",
+    "no_fen_line_error": "No FEN line inside PGN !",
+
+    "choose_promotion_piece": "Choose the promotion piece :",
+    "queen_promotion": "Queen",
+    "rook_promotion": "Rook",
+    "bishop_promotion": "Bishop",
+    "knight_promotion": "Knight",
+
+    "game_ending_mate": "Chessmate",
+    "game_ending_draw_stalemate": "Draw by stalemate",
+    "game_ending_draw_missing_material": "Draw by missing mating material",
+    "game_ending_draw_three_fold_repetitions": "Draw by three-fold repetitions",
+    "game_ending_draw_fifty_moves_rule": "Draw by the 50-moves rule",
 
     "sample_exercises": "Sample",
     "custom_exercises": "Custom",
-    "custom_exercises_root": "exercises://"
+    "custom_exercises_root": "exercises://",
+
+    "sample_kp_kpp": "King+Pawn/King+2Pawns"
 }

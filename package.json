@@ -12,7 +12,10 @@
   "license": "SEE LICENSE IN <your-license-filename>",
   "repository": "<fill-your-repository-here>",
   "dependencies": {
+    "@nota/nativescript-webview-ext": "^5.4.1",
     "@nstudio/nativescript-floatingactionbutton": "^1.1.0",
+    "chess.js": "^0.10.2",
+    "nativescript-canvas": "^2.1.9",
     "nativescript-localize": "^4.2.0",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-vue": "~2.4.0",

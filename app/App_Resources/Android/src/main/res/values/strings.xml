@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="sample_kp_kpp">"King+Pawn/King+2Pawns"</string>
   <string name="custom_exercises_root">"exercises://"</string>
   <string name="custom_exercises">"Custom"</string>
   <string name="sample_exercises">"Sample"</string>
+  <string name="game_ending_draw_fifty_moves_rule">"Draw by the 50-moves rule"</string>
+  <string name="game_ending_draw_three_fold_repetitions">"Draw by three-fold repetitions"</string>
+  <string name="game_ending_draw_missing_material">"Draw by missing mating material"</string>
+  <string name="game_ending_draw_stalemate">"Draw by stalemate"</string>
+  <string name="game_ending_mate">"Chessmate"</string>
+  <string name="knight_promotion">"Knight"</string>
+  <string name="bishop_promotion">"Bishop"</string>
+  <string name="rook_promotion">"Rook"</string>
+  <string name="queen_promotion">"Queen"</string>
+  <string name="choose_promotion_piece">"Choose the promotion piece :"</string>
+  <string name="no_fen_line_error">"No FEN line inside PGN !"</string>
+  <string name="exercise_loading_error">"Exercise loading error"</string>
+  <string name="confirm_stop_game">"Do you really want to stop the game ?"</string>
+  <string name="stop_game_title">"Stop game ?"</string>
+  <string name="game_title">"Game in progress"</string>
   <string name="home_title">"Choose your exercise"</string>
+  <string name="cancel_button">"Cancel"</string>
+  <string name="ok_button">"Ok"</string>
   <string name="_app_name_1k3Sbz">"Chess exercises manager"</string>
   <string name="app_name">"Chess exercises manager"</string>
   <string name="title_activity_kimera">"Chess exercises manager"</string>

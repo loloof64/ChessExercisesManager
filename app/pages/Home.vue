@@ -13,7 +13,6 @@
                             <v-template>
                                 <Label :text="item.label" fontSize="22" width="100%"
                                     @tap="onSampleExerciseTap(item)"
-                                    @longPress="readSample(item)"
                                  />
                             </v-template>
                         </ListView>
@@ -39,13 +38,15 @@
     Vue.filter("L", localize);
 
     const fileSystemModule = require("tns-core-modules/file-system");
+
+    import ExerciceLoader from '../util/ExerciceLoader';
     
     export default {
         data() {
             return {
                 sampleExercises: [
                     {
-                        path: 'kp_kpp.cst',
+                        path: 'kp_kpp.pgn',
                         label: localize('sample_kp_kpp'),
                     },
                 ],
@@ -59,11 +60,30 @@
         },
         methods: {  
             async onSampleExerciseTap(exerciseItem) {
-                
-            },
+                try {
+                    const position = await new ExerciceLoader().loadSampleExercise(exerciseItem.path);
+                    const gameGoal = '';
 
-            async readSample(item) {
-                
+                    this.$navigator.navigate('/game', {
+                        transition: {
+                            name:'slide',
+                            duration: 200
+                        },
+                        props: {
+                            position,
+                            gameGoal,
+                        }
+                    });
+                }
+                catch (e) {
+                    alert({
+                        title: localize('exercise_loading_error'),
+                        message: e.error || e,
+                        okButtonText: localize('ok_button')
+                    }).then(() => {
+                        console.error(e.error || e);
+                    })
+                }
             },
         },
         components: {FileExplorer,},

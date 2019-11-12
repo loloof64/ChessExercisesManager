@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <string name="sample_kp_kpp">"Roi+Pion/Roi+2Pions"</string>
   <string name="custom_exercises_root">"exercices://"</string>
   <string name="custom_exercises">"Personnels"</string>
   <string name="sample_exercises">"Exemples"</string>
+  <string name="game_ending_draw_fifty_moves_rule">"Nulle par la règle des coups"</string>
+  <string name="game_ending_draw_three_fold_repetitions">"Nulle par triple répétitions"</string>
+  <string name="game_ending_draw_missing_material">"Nulle par manque de matériel"</string>
+  <string name="game_ending_draw_stalemate">"Nulle par pat"</string>
+  <string name="game_ending_mate">"Echec et mat"</string>
+  <string name="knight_promotion">"Cavalier"</string>
+  <string name="bishop_promotion">"Fou"</string>
+  <string name="rook_promotion">"Tour"</string>
+  <string name="queen_promotion">"Dame"</string>
+  <string name="choose_promotion_piece">"Selectionnez la pièce de promotion :"</string>
+  <string name="no_fen_line_error">"Aucune ligne FEN dans le PGN !"</string>
+  <string name="exercise_loading_error">"Erreur de chargement d\'exercice"</string>
+  <string name="confirm_stop_game">"Souhaitez-vous vraiment interrompre la partie ?"</string>
+  <string name="stop_game_title">"Interrompre la partie ?"</string>
+  <string name="game_title">"Partie en cours"</string>
   <string name="home_title">"Choisissez votre exercice"</string>
+  <string name="cancel_button">"Annuler"</string>
+  <string name="ok_button">"D\'accord"</string>
   <string name="_app_name_1k3Sbz">"Gestion d\'exercices d\'échecs"</string>
   <string name="app_name">"Gestion d\'exercices d\'échecs"</string>
   <string name="title_activity_kimera">"Gestion d\'exercices d\'échecs"</string>

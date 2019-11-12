@@ -1,15 +1,13 @@
 import Vue from "nativescript-vue";
+Vue.config.silent = true;
 
-import Home from "./pages/Home";
+import Navigator from 'nativescript-vue-navigator';
+import {routes} from './routes';
+
+Vue.use(Navigator, { routes });
 
 new Vue({
-
     template: `
-        <Frame>
-            <Home />
-        </Frame>`,
-
-    components: {
-        Home
-    }
+        <Navigator :defaultRoute="'/home'" />
+    `
 }).$start();
