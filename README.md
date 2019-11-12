@@ -1,3 +1,3 @@
 # Chess exercises manager
 
-Load an exercise position and play it against the device.
+Load a chess exercise position and play it against the device.
