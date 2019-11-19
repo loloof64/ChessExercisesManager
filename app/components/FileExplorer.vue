@@ -172,8 +172,8 @@ import ExerciseLoader from '../util/ExerciceLoader';
                 try {
                     await this.exerciceLoader.loginGoogleDriveIfNeeded();
                     this.isLoggedInGoogleDrive = true;
-                    const data = await this.exerciceLoader.loadGoogleDriveAboutData();
-                    console.log(JSON.stringify(data));
+                    const data = await this.exerciceLoader.loadGoogleDriveRootFiles();
+                    data['content'].toJSON()['files'].forEach(fileData => console.log(JSON.stringify(fileData)));
                 }
                 catch (e) {
                     console.error(e);
