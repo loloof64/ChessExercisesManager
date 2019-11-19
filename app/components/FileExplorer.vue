@@ -162,9 +162,15 @@ import ExerciseLoader from '../util/ExerciceLoader';
                 }
             },
 
-            _testGoogleDrive() {
-                this.exerciceLoader.login();
-                const exercise = this.exerciceLoader.loadExerciseFromGoogleDrive();
+            async _testGoogleDrive() {
+                try {
+                    await this.exerciceLoader.login();
+                    const data = await this.exerciceLoader.loadGoogleDriveAboutData();
+                    console.log(JSON.stringify(data));
+                }
+                catch (e) {
+                    console.error(e);
+                }
             }
         }
     }

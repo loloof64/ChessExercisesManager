@@ -1,44 +1,47 @@
 const fileSystemModule = require("tns-core-modules/file-system");
 const connectivityModule = require("tns-core-modules/connectivity");
+const httpModule = require("tns-core-modules/http");
 import { localize } from "nativescript-localize";
 import { TnsOAuthClient } from "nativescript-oauth2";
 
 export default class ExerciseLoader {
 
     login() {
-        const noNeedToLoginAgain = this.client !== undefined;
-        if (noNeedToLoginAgain) {
-            return;
-        }
-        
-        const type = connectivityModule.getConnectionType();
-        const noInternetConnection = type === connectivityModule.connectionType.none;
-        if (noInternetConnection) {
-            alert({
-                title: localize('no_internet_title'),
-                message: localize('no_internet_message'),
-                okButtonText: localize('ok_button')
-            }).then(() => {
-                console.error('no internet connection');
-            })
-            return;
-        }
-        this.client = new TnsOAuthClient("google");
+        return new Promise((resolve, reject) => {
+            const noNeedToLoginAgain = this.client !== undefined;
+            if (noNeedToLoginAgain) {
+                return;
+            }
+            
+            const type = connectivityModule.getConnectionType();
+            const noInternetConnection = type === connectivityModule.connectionType.none;
+            if (noInternetConnection) {
+                alert({
+                    title: localize('no_internet_title'),
+                    message: localize('no_internet_message'),
+                    okButtonText: localize('ok_button')
+                }).then(() => {
+                    console.error('no internet connection');
+                })
+                return;
+            }
+            this.client = new TnsOAuthClient("google");
 
-        setTimeout(() => {
-            this.client.loginWithCompletion((tokenResult, error) => {
-                if (error) {
-                    console.error("Cloud login error");
-                    console.error(error);
-                } else {
-                    console.log('Log in successful');
-                    console.log(JSON.stringify(tokenResult));
-                }
+            setTimeout(() => {
+                this.client.loginWithCompletion((tokenResult, error) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        this.tokens = tokenResult;
+                        resolve();
+                    }
+                });
             });
-        });
+        })
     }
 
     logout() {
+        this.tokens = null;
         this.client.logout();
     }
 
@@ -67,6 +70,22 @@ export default class ExerciseLoader {
 
     async loadExerciseFromGoogleDrive() {
 
+    }
+
+    loadGoogleDriveAboutData() {
+        return new Promise((resolve, reject) => {
+            httpModule.request({
+                url: "https://www.googleapis.com/drive/v3/about?fields=*",
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${this.tokens.accessToken}`,
+                },
+            }).then((response) => {
+                resolve(response);
+            }, (e) => {
+                reject(e);
+            });
+        });
     }
 
 }

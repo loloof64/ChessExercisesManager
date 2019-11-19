@@ -13,7 +13,7 @@ export function configureOAuthProviderGoogle() {
         "com.googleusercontent.apps.27447891325-qhmmuc2qpckum7k1sf91vk8277subv27:/auth",
         urlScheme:
         "com.googleusercontent.apps.27447891325-qhmmuc2qpckum7k1sf91vk8277subv27",
-        scopes: ["email"]
+        scopes: ["email", "https://www.googleapis.com/auth/drive.readonly"]
     };
 
     const googleProvider = new TnsOaProviderGoogle(googleProviderOptions);
