@@ -17,9 +17,15 @@
             </ScrollView>
             <Fab
                 class="fab-button hl vb"
+                backgroundColor="purple"
+                icon="res://logout"
+                @tap="_logoutGoogleDrive()"
+            />
+            <Fab
+                class="fab-button hr vb"
                 backgroundColor="yellowgreen"
                 icon="res://download"
-                @tap="_testGoogleDrive()"
+                @tap="_accessGoogleDrive()"
             />
             <ActivityIndicator :busy="generatingPosition" row="0" col="0" />
         </GridLayout>
@@ -60,9 +66,6 @@ import ExerciseLoader from '../util/ExerciceLoader';
             this.exercisesRootFolder = rootFolder;
             this.currentFolder = rootFolder;
             this._updateItems();
-        },
-        beforeDestroy () {
-            this.exerciceLoader.logout();
         },
         methods: {
             _onExplorerTap(explorerItem) {
@@ -162,11 +165,20 @@ import ExerciseLoader from '../util/ExerciceLoader';
                 }
             },
 
-            async _testGoogleDrive() {
+            async _accessGoogleDrive() {
                 try {
-                    await this.exerciceLoader.login();
+                    await this.exerciceLoader.loginGoogleDrive();
                     const data = await this.exerciceLoader.loadGoogleDriveAboutData();
                     console.log(JSON.stringify(data));
+                }
+                catch (e) {
+                    console.error(e);
+                }
+            },
+
+            async _logoutGoogleDrive() {
+                try {
+                    await this.exerciceLoader.logoutGoogleDrive();
                 }
                 catch (e) {
                     console.error(e);

@@ -6,10 +6,25 @@ import { TnsOAuthClient } from "nativescript-oauth2";
 
 export default class ExerciseLoader {
 
-    login() {
+    loginGoogleDrive() {
         return new Promise((resolve, reject) => {
-            const noNeedToLoginAgain = this.client !== undefined;
+            this.client = new TnsOAuthClient("google");
+
+            const currentAppFolder = fileSystemModule.knownFolders.currentApp();
+            const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
+
+            const noNeedToLoginAgain = fileSystemModule.File.exists(credentialsPath);
             if (noNeedToLoginAgain) {
+                const credentialsFile = fileSystemModule.File.fromPath(credentialsPath);
+                credentialsFile.readText()
+                .then((res) => {
+                    const content = JSON.parse(res);
+                    this.googleDriveTokens = content;
+                }).catch((err) => {
+                    console.error('Failed to read Google Drive configuration file !');
+                    console.error(err);
+                });
+                resolve();
                 return;
             }
             
@@ -21,18 +36,28 @@ export default class ExerciseLoader {
                     message: localize('no_internet_message'),
                     okButtonText: localize('ok_button')
                 }).then(() => {
-                    console.error('no internet connection');
+                    reject('no internet connection');
                 })
                 return;
             }
-            this.client = new TnsOAuthClient("google");
 
             setTimeout(() => {
                 this.client.loginWithCompletion((tokenResult, error) => {
                     if (error) {
                         reject(error);
                     } else {
-                        this.tokens = tokenResult;
+                        this.googleDriveTokens = tokenResult;
+
+                        const credentialsFile = this._getGoogleDriveConfigurationFile();
+
+                        credentialsFile.writeText(JSON.stringify(tokenResult))
+                        .then((result) => {
+                            console.log('Successfully written Google Drive access in configuration file.')
+                        }).catch((err) => {
+                            console.error('Failed to save Google Drive access in configuration file !');
+                            reject(err);
+                        });
+
                         resolve();
                     }
                 });
@@ -40,9 +65,40 @@ export default class ExerciseLoader {
         })
     }
 
-    logout() {
-        this.tokens = null;
-        this.client.logout();
+    logoutGoogleDrive() {
+        return new Promise((resolve, reject) => {
+            const credentialsFile = this._getGoogleDriveConfigurationFile();
+            credentialsFile.remove()
+            .then((res) => {
+                console.log("Google Drive configuration file successfully deleted.");
+                resolve();
+            }).catch((err) => {
+                reject("Failed to remove Google Drive configuration file !");
+            });
+        });
+    }
+
+    _getGoogleDriveConfigurationFile() {
+        const currentAppFolder = fileSystemModule.knownFolders.currentApp();
+        const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
+        return fileSystemModule.File.fromPath(credentialsPath);
+    }
+
+    logoutGoogleDrive() {
+        this.googleDriveTokens = null;
+        
+        const credentialsFile = this._getGoogleDriveConfigurationFile();
+
+        credentialsFile.remove()
+        .then((res) => {
+            console.log('Successfully removed Google Drive crendentials file.');
+        }).catch((err) => {
+            console.error('Failed to delete Google Drive credentials file.');
+            console.error(err);
+        });
+        if (this.client) {
+            this.client.logout();
+        }
     }
 
     async loadSampleExercise(scriptFileName) {
@@ -78,7 +134,7 @@ export default class ExerciseLoader {
                 url: "https://www.googleapis.com/drive/v3/about?fields=*",
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${this.tokens.accessToken}`,
+                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
                 },
             }).then((response) => {
                 resolve(response);
