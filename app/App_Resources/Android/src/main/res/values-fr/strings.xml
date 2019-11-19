@@ -3,6 +3,8 @@
   <string name="sample_kppp_kppp">"Roi+3Pions/Roi+3Pions"</string>
   <string name="sample_kp_kpp">"Roi+Pion/Roi+2Pions"</string>
   <string name="sample_krr_k">"Roi+2Tours/Roi"</string>
+  <string name="logout_account_message">"Voulez-vous vraiment vous déconnecter de votre compte Google Drive ?"</string>
+  <string name="logout_account_title">"Se déconnecter du compte ?"</string>
   <string name="no_internet_message">"Aucune connexion internet : il faut résoudre ce problème afin d\'accèder à cette fonctionnalité."</string>
   <string name="no_internet_title">"Aucune connexion internet"</string>
   <string name="custom_exercises_root">"exercices://"</string>

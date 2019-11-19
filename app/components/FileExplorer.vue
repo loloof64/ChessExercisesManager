@@ -176,13 +176,22 @@ import ExerciseLoader from '../util/ExerciceLoader';
                 }
             },
 
-            async _logoutGoogleDrive() {
-                try {
-                    await this.exerciceLoader.logoutGoogleDrive();
-                }
-                catch (e) {
-                    console.error(e);
-                }
+            _logoutGoogleDrive() {
+                confirm({
+                    title: localize('logout_account_title'),
+                    message: localize('logout_account_message'),
+                    okButtonText: localize('ok_button'),
+                    cancelButtonText: localize('cancel_button'),
+                }).then(async result => {
+                        if (result) {
+                            try {
+                            await this.exerciceLoader.logoutGoogleDrive();
+                        }
+                        catch (e) {
+                            console.error(e);
+                        }
+                    }
+                });
             }
         }
     }
