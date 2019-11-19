@@ -20,6 +20,7 @@
                 backgroundColor="purple"
                 icon="res://logout"
                 @tap="_logoutGoogleDrive()"
+                :visibility="isLoggedInGoogleDrive ? 'visible': 'collapse'"
             />
             <Fab
                 class="fab-button hr vb"
@@ -58,14 +59,16 @@ import ExerciseLoader from '../util/ExerciceLoader';
                 exercisesRootFolder: undefined,
                 generatingPosition: false,
                 exerciceLoader: new ExerciceLoader(),
+                isLoggedInGoogleDrive: false,
             }
         },
-        async mounted() {
+        mounted() {
             const currentAppFolder = fileSystemModule.knownFolders.currentApp();
             const rootFolder = currentAppFolder.getFolder('personnal_exercises');
             this.exercisesRootFolder = rootFolder;
             this.currentFolder = rootFolder;
             this._updateItems();
+            this.isLoggedInGoogleDrive = this.exerciceLoader.isLoggedInGoogleDrive();
         },
         methods: {
             _onExplorerTap(explorerItem) {
@@ -167,7 +170,8 @@ import ExerciseLoader from '../util/ExerciceLoader';
 
             async _accessGoogleDrive() {
                 try {
-                    await this.exerciceLoader.loginGoogleDrive();
+                    await this.exerciceLoader.loginGoogleDriveIfNeeded();
+                    this.isLoggedInGoogleDrive = true;
                     const data = await this.exerciceLoader.loadGoogleDriveAboutData();
                     console.log(JSON.stringify(data));
                 }
@@ -183,9 +187,10 @@ import ExerciseLoader from '../util/ExerciceLoader';
                     okButtonText: localize('ok_button'),
                     cancelButtonText: localize('cancel_button'),
                 }).then(async result => {
-                        if (result) {
-                            try {
+                    if (result) {
+                        try {
                             await this.exerciceLoader.logoutGoogleDrive();
+                            this.isLoggedInGoogleDrive = false;
                         }
                         catch (e) {
                             console.error(e);

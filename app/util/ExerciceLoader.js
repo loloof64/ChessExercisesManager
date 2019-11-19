@@ -6,25 +6,24 @@ import { TnsOAuthClient } from "nativescript-oauth2";
 
 export default class ExerciseLoader {
 
-    loginGoogleDrive() {
+    loginGoogleDriveIfNeeded() {
         return new Promise((resolve, reject) => {
             this.client = new TnsOAuthClient("google");
 
-            const currentAppFolder = fileSystemModule.knownFolders.currentApp();
-            const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
-
-            const noNeedToLoginAgain = fileSystemModule.File.exists(credentialsPath);
+            const noNeedToLoginAgain = this.isLoggedInGoogleDrive();
             if (noNeedToLoginAgain) {
+                const currentAppFolder = fileSystemModule.knownFolders.currentApp();
+                const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
                 const credentialsFile = fileSystemModule.File.fromPath(credentialsPath);
                 credentialsFile.readText()
                 .then((res) => {
                     const content = JSON.parse(res);
                     this.googleDriveTokens = content;
+                    resolve();
                 }).catch((err) => {
                     console.error('Failed to read Google Drive configuration file !');
-                    console.error(err);
+                    reject(err);
                 });
-                resolve();
                 return;
             }
             
@@ -78,6 +77,16 @@ export default class ExerciseLoader {
         });
     }
 
+    isLoggedInGoogleDrive() {
+        const currentAppFolder = fileSystemModule.knownFolders.currentApp();
+        const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
+
+        return fileSystemModule.File.exists(credentialsPath);
+    }
+
+    /*
+        Access configuration file and creates it if not present.
+    */
     _getGoogleDriveConfigurationFile() {
         const currentAppFolder = fileSystemModule.knownFolders.currentApp();
         const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
@@ -96,6 +105,7 @@ export default class ExerciseLoader {
             console.error('Failed to delete Google Drive credentials file.');
             console.error(err);
         });
+
         if (this.client) {
             this.client.logout();
         }
