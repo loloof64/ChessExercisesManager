@@ -1,7 +1,7 @@
 import Vue from "nativescript-vue";
 Vue.config.silent = true;
 
-import { configureOAuthProviderGoogle } from './util/OAuthProviders';
+import { configureOAuthProviderGoogle } from './logic/OAuthProviders';
 
 configureOAuthProviderGoogle();
 

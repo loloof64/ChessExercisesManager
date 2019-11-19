@@ -39,8 +39,7 @@
     const platformModule = require("tns-core-modules/platform");
     const fileSystemModule = require("tns-core-modules/file-system");
 
-    import ExerciceLoader from '../util/ExerciceLoader';
-import ExerciseLoader from '../util/ExerciceLoader';
+    import GoogleDriveProvider from '../logic/GoogleDriveProvider';
 
     Vue.filter("L", localize);
     Vue.registerElement(
@@ -58,7 +57,7 @@ import ExerciseLoader from '../util/ExerciceLoader';
                 currentFolder: undefined,
                 exercisesRootFolder: undefined,
                 generatingPosition: false,
-                exerciceLoader: new ExerciceLoader(),
+                googleDriveProvider: new GoogleDriveProvider(),
                 isLoggedInGoogleDrive: false,
             }
         },
@@ -68,7 +67,7 @@ import ExerciseLoader from '../util/ExerciceLoader';
             this.exercisesRootFolder = rootFolder;
             this.currentFolder = rootFolder;
             this._updateItems();
-            this.isLoggedInGoogleDrive = this.exerciceLoader.isLoggedInGoogleDrive();
+            this.isLoggedInGoogleDrive = this.googleDriveProvider.isLoggedInGoogleDrive();
         },
         methods: {
             _onExplorerTap(explorerItem) {
@@ -170,10 +169,14 @@ import ExerciseLoader from '../util/ExerciceLoader';
 
             async _accessGoogleDrive() {
                 try {
-                    await this.exerciceLoader.loginGoogleDriveIfNeeded();
+                    await this.googleDriveProvider.loginGoogleDriveIfNeeded();
                     this.isLoggedInGoogleDrive = true;
-                    const data = await this.exerciceLoader.loadGoogleDriveRootFiles();
-                    data['content'].toJSON()['files'].forEach(fileData => console.log(JSON.stringify(fileData)));
+                    this.$navigator.navigate('/google_drive', {
+                        transition: {
+                            name:'slide',
+                            duration: 200
+                        },
+                    });
                 }
                 catch (e) {
                     console.error(e);
@@ -189,7 +192,7 @@ import ExerciseLoader from '../util/ExerciceLoader';
                 }).then(async result => {
                     if (result) {
                         try {
-                            await this.exerciceLoader.logoutGoogleDrive();
+                            await this.googleDriveProvider.logoutGoogleDrive();
                             this.isLoggedInGoogleDrive = false;
                         }
                         catch (e) {

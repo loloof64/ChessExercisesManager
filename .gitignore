@@ -33,4 +33,4 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 
-app/util/api_secrets.js
+app/logic/api_secrets.js

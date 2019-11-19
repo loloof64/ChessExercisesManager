@@ -1,10 +1,10 @@
-const fileSystemModule = require("tns-core-modules/file-system");
 const connectivityModule = require("tns-core-modules/connectivity");
+const fileSystemModule = require("tns-core-modules/file-system");
 const httpModule = require("tns-core-modules/http");
-import { localize } from "nativescript-localize";
 import { TnsOAuthClient } from "nativescript-oauth2";
+import { localize } from "nativescript-localize";
 
-export default class ExerciseLoader {
+export default class GoogleDriveProvider {
 
     loginGoogleDriveIfNeeded() {
         return new Promise((resolve, reject) => {
@@ -111,33 +111,10 @@ export default class ExerciseLoader {
         }
     }
 
-    async loadSampleExercise(scriptFileName) {
-        const currentAppFolder = fileSystemModule.knownFolders.currentApp();
-        const path = fileSystemModule.path.join(currentAppFolder.path, 'sample_exercises', scriptFileName);
-        return await this.loadExerciseFromAbsolutePath(path);
-    }
-
-    async loadExerciseFromAbsolutePath(absolutePath) {
-        const file = fileSystemModule.File.fromPath(absolutePath);
-        const input = await file.readText();
-
-        const inputLines = input.split(/\r?\n/);
-
-        const fenLine = inputLines.find(line => line.startsWith('[FEN'));
-        if (fenLine === undefined) throw localize('no_fen_line_error');
-        
-        // Removes the first part of the string
-        let result = fenLine.split(' ').slice(1).join(' ');
-        // Removes the last ']'
-        result = result.substring(0, result.length - 1);
-        // Removes both '"'
-        return result.substring(1, result.length - 1);
-    }
-
     loadGoogleDriveRootFiles() {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
-            const fields = 'files(id,name,mimeType)';
+            const fields = '*'//'files(id,name,mimeType)';
             const filter = this._escapeHtml('');
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
@@ -161,5 +138,4 @@ export default class ExerciseLoader {
 
         return result;
     }
-
-}
+};

@@ -39,7 +39,7 @@
 
     const fileSystemModule = require("tns-core-modules/file-system");
 
-    import ExerciceLoader from '../util/ExerciceLoader';
+    import ExerciceLoader from '../logic/ExerciceLoader';
     
     export default {
         data() {
