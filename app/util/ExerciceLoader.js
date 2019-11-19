@@ -1,7 +1,46 @@
 const fileSystemModule = require("tns-core-modules/file-system");
+const connectivityModule = require("tns-core-modules/connectivity");
 import { localize } from "nativescript-localize";
+import { TnsOAuthClient } from "nativescript-oauth2";
 
 export default class ExerciseLoader {
+
+    login() {
+        const noNeedToLoginAgain = this.client !== undefined;
+        if (noNeedToLoginAgain) {
+            return;
+        }
+        
+        const type = connectivityModule.getConnectionType();
+        const noInternetConnection = type === connectivityModule.connectionType.none;
+        if (noInternetConnection) {
+            alert({
+                title: localize('no_internet_title'),
+                message: localize('no_internet_message'),
+                okButtonText: localize('ok_button')
+            }).then(() => {
+                console.error('no internet connection');
+            })
+            return;
+        }
+        this.client = new TnsOAuthClient("google");
+
+        setTimeout(() => {
+            this.client.loginWithCompletion((tokenResult, error) => {
+                if (error) {
+                    console.error("Cloud login error");
+                    console.error(error);
+                } else {
+                    console.log('Log in successful');
+                    console.log(JSON.stringify(tokenResult));
+                }
+            });
+        });
+    }
+
+    logout() {
+        this.client.logout();
+    }
 
     async loadSampleExercise(scriptFileName) {
         const currentAppFolder = fileSystemModule.knownFolders.currentApp();
@@ -24,6 +63,10 @@ export default class ExerciseLoader {
         result = result.substring(0, result.length - 1);
         // Removes both '"'
         return result.substring(1, result.length - 1);
+    }
+
+    async loadExerciseFromGoogleDrive() {
+
     }
 
 }

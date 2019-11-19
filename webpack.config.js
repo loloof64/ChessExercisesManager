@@ -48,9 +48,11 @@ module.exports = env => {
         unitTesting, // --env.unitTesting
         verbose, // --env.verbose
         snapshotInDocker, // --env.snapshotInDocker
-        skipSnapshotTools // --env.skipSnapshotTools
+        skipSnapshotTools, // --env.skipSnapshotTools
+        compileSnapshot // --env.compileSnapshot
     } = env;
 
+    const useLibs = compileSnapshot;
     const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap;
     const externals = nsWebpack.getConvertedExternals(env.externals);
 
@@ -132,6 +134,7 @@ module.exports = env => {
         devtool: hiddenSourceMap ? "hidden-source-map" : (sourceMap ? "inline-source-map" : "none"),
         optimization: {
             runtimeChunk: "single",
+            noEmitOnErrors: true,
             splitChunks: {
                 cacheGroups: {
                     vendor: {
@@ -193,7 +196,29 @@ module.exports = env => {
                 ].filter(loader => Boolean(loader)),
             },
             {
+                test: /[\/|\\]app\.css$/,
+                use: [
+                    'nativescript-dev-webpack/style-hot-loader',
+                    {
+                        loader: "nativescript-dev-webpack/css2json-loader",
+                        options: { useForImports: true }
+                    },
+                ],
+            },
+            {
+                test: /[\/|\\]app\.scss$/,
+                use: [
+                    'nativescript-dev-webpack/style-hot-loader',
+                    {
+                        loader: "nativescript-dev-webpack/css2json-loader",
+                        options: { useForImports: true }
+                    },
+                    'sass-loader',
+                ],
+            },
+            {
                 test: /\.css$/,
+                exclude: /[\/|\\]app\.css$/,
                 use: [
                     'nativescript-dev-webpack/style-hot-loader',
                     'nativescript-dev-webpack/apply-css-loader.js',
@@ -202,11 +227,12 @@ module.exports = env => {
             },
             {
                 test: /\.scss$/,
+                exclude: /[\/|\\]app\.scss$/,
                 use: [
                     'nativescript-dev-webpack/style-hot-loader',
                     'nativescript-dev-webpack/apply-css-loader.js',
                     { loader: "css-loader", options: { url: false } },
-                    "sass-loader",
+                    'sass-loader',
                 ],
             },
             {
@@ -301,7 +327,8 @@ module.exports = env => {
             projectRoot,
             webpackConfig: config,
             snapshotInDocker,
-            skipSnapshotTools
+            skipSnapshotTools,
+            useLibs
         }));
     }
 

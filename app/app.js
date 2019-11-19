@@ -1,6 +1,10 @@
 import Vue from "nativescript-vue";
 Vue.config.silent = true;
 
+import { configureOAuthProviderGoogle } from './util/OAuthProviders';
+
+configureOAuthProviderGoogle();
+
 import Navigator from 'nativescript-vue-navigator';
 import {routes} from './routes';
 

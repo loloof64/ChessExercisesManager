@@ -53,12 +53,12 @@ import { Color } from 'tns-core-modules/color/color';
 import { Canvas, Cap, drawRect, createRect, Paint, Style} from 'nativescript-canvas';
 
 import { knownFolders, path } from 'tns-core-modules/file-system/file-system';
-import { fromFile, ImageSource } from 'tns-core-modules/image-source/image-source';
+import { ImageSource } from 'tns-core-modules/image-source/image-source';
 
 let piecesPictures = [];
 
 const loadPiecePicture = (refShortcut) => {
-    piecesPictures[refShortcut] = fromFile(path.join( knownFolders.currentApp().path, 'components/chessboard/chess_vectors/'+refShortcut+'.png'));
+    piecesPictures[refShortcut] = ImageSource.fromFileSync(path.join( knownFolders.currentApp().path, 'components/chessboard/chess_vectors/'+refShortcut+'.png'));
 }
 for (let shortcut of ['pl', 'nl', 'bl', 'rl', 'ql', 'kl', 'pd', 'nd', 'bd', 'rd', 'qd', 'kd']) {
     loadPiecePicture(shortcut);

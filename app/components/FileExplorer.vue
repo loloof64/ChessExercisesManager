@@ -15,6 +15,12 @@
                     </v-template>
                 </ListView>
             </ScrollView>
+            <Fab
+                class="fab-button hl vb"
+                backgroundColor="yellowgreen"
+                icon="res://download"
+                @tap="_testGoogleDrive()"
+            />
             <ActivityIndicator :busy="generatingPosition" row="0" col="0" />
         </GridLayout>
     </StackLayout>
@@ -25,6 +31,9 @@
     import Vue from "nativescript-vue";
     const platformModule = require("tns-core-modules/platform");
     const fileSystemModule = require("tns-core-modules/file-system");
+
+    import ExerciceLoader from '../util/ExerciceLoader';
+import ExerciseLoader from '../util/ExerciceLoader';
 
     Vue.filter("L", localize);
     Vue.registerElement(
@@ -42,6 +51,7 @@
                 currentFolder: undefined,
                 exercisesRootFolder: undefined,
                 generatingPosition: false,
+                exerciceLoader: new ExerciceLoader(),
             }
         },
         async mounted() {
@@ -50,6 +60,9 @@
             this.exercisesRootFolder = rootFolder;
             this.currentFolder = rootFolder;
             this._updateItems();
+        },
+        beforeDestroy () {
+            this.exerciceLoader.logout();
         },
         methods: {
             _onExplorerTap(explorerItem) {
@@ -148,6 +161,11 @@
                     this._updateItems(); 
                 }
             },
+
+            _testGoogleDrive() {
+                this.exerciceLoader.login();
+                const exercise = this.exerciceLoader.loadExerciseFromGoogleDrive();
+            }
         }
     }
 </script>
