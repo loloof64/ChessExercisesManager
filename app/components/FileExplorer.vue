@@ -42,10 +42,6 @@
     import GoogleDriveProvider from '../logic/GoogleDriveProvider';
 
     Vue.filter("L", localize);
-    Vue.registerElement(
-        'Fab',
-        () => require('@nstudio/nativescript-floatingactionbutton').Fab
-    );
 
     export default {
         data() {

@@ -21,6 +21,13 @@
                         </v-template>
                     </ListView>
                 </ScrollView>
+                <Fab
+                    class="fab-button hl vb"
+                    backgroundColor="yellow"
+                    icon="res://gobackarrow"
+                    @tap="_goBackFolder()"
+                    :visibility="_goBackFolderVisibility()"
+                />
             </GridLayout>
         </StackLayout>
 
@@ -40,7 +47,8 @@ export default {
         return {
             explorerPath: '',
             explorerItems: [],
-            itemsViewHeight: platformModule.screen.mainScreen.heightDIPs - 260,
+            parentFoldersIds: [],
+            itemsViewHeight: platformModule.screen.mainScreen.heightDIPs - 200,
             explorerPathWidth: platformModule.screen.mainScreen.widthDIPs,
             googleDriveProvider: new GoogleDriveProvider(),
         }
@@ -62,7 +70,23 @@ export default {
             if (isAFolder) {
                 const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
                 this.explorerItems = data['content'].toJSON()['files'];
+                this.parentFoldersIds.push(item.id);
             }
+        },
+        async _goBackFolder() {
+            this.parentFoldersIds.pop();
+            if (this.parentFoldersIds.length > 0) {
+                const parentItemId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
+                const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(parentItemId);
+                this.explorerItems = data['content'].toJSON()['files'];
+            }
+            else {
+                const data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
+                this.explorerItems = data['content'].toJSON()['files'];
+            }
+        },
+        _goBackFolderVisibility() {
+            return this.parentFoldersIds.length > 0 ? 'visible' : 'collapse';
         }
     },
 }
@@ -91,5 +115,23 @@ export default {
     height: 100%;
     font-size: 22;
     vertical-align: middle;
+}
+
+.fab-button {
+    width: 65;
+    height: 65;
+    opacity: 0.3;
+}
+
+.hl {
+    horizontal-align: left;
+}
+
+.hr {
+    horizontal-align: right;
+}
+
+.vb {
+    vertical-align: bottom;
 }
 </style>

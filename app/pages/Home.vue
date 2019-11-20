@@ -36,6 +36,10 @@
 
     import Vue from "nativescript-vue";
     Vue.filter("L", localize);
+    Vue.registerElement(
+        'Fab',
+        () => require('@nstudio/nativescript-floatingactionbutton').Fab
+    );
 
     const fileSystemModule = require("tns-core-modules/file-system");
 
