@@ -114,7 +114,7 @@ export default class GoogleDriveProvider {
     loadGoogleDriveRootFiles() {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
-            const fields = '*'//'files(id,name,mimeType)';
+            const fields = 'files(id,name,mimeType)';
             const filter = this._escapeHtml('');
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,

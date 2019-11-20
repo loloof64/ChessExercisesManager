@@ -1,30 +1,36 @@
 <template>
-    <StackLayout>
-        <ScrollView :width="explorerPathWidth" height="30" orientation="horizontal">
-            <Label :text="explorerPath" class="explorerPath" textWrap="true" />
-        </ScrollView>
-        <GridLayout>
-            <ScrollView :height="itemsViewHeight" orientation="vertical" @itemTap="_onExplorerTap($event.item)">
-                <ListView for="item in explorerItems">
-                    <v-template>
-                        <StackLayout orientation="horizontal">
-                            <Image src="res://download" class="download_thumnail" />
-                            <Image v-if="_isFolder(item)" src="res://folder" class="type_thumbnail" />
-                            <Image v-else src="res://file" class="type_thumbnail" />
-                            <Label :text="item.name" class="item_label" />
-                        </StackLayout>
-                    </v-template>
-                </ListView>
+    <Page class="page">
+        <ActionBar class="action-bar">
+            <Label class="action-bar-title" :text="'google_drive_title' | L"></Label>
+        </ActionBar>
+
+        <StackLayout>
+            <ScrollView :width="explorerPathWidth" height="30" orientation="horizontal">
+                <Label :text="explorerPath" class="explorerPath" textWrap="true" />
             </ScrollView>
-            <ActivityIndicator :busy="generatingPosition" row="0" col="0" />
-        </GridLayout>
-    </StackLayout>
+            <GridLayout>
+                <ScrollView :height="itemsViewHeight" orientation="vertical">
+                    <ListView for="item in explorerItems">
+                        <v-template>
+                            <StackLayout orientation="horizontal">
+                                <Image src="res://download" class="download_thumnail" />
+                                <Image v-if="_isFolder(item)" src="res://folder" class="type_thumbnail" />
+                                <Image v-else src="res://file" class="type_thumbnail" />
+                                <Label :text="item.name" class="item_label" />
+                            </StackLayout>
+                        </v-template>
+                    </ListView>
+                </ScrollView>
+            </GridLayout>
+        </StackLayout>
+
+    </Page>
 </template>
 
 <script>
 import { localize } from "nativescript-localize";
 import Vue from "nativescript-vue";
-import ExerciseLoader from '../logic/ExerciceLoader';
+import GoogleDriveProvider from '../logic/GoogleDriveProvider';
 const platformModule = require("tns-core-modules/platform");
 
 Vue.filter("L", localize);
@@ -36,28 +42,29 @@ export default {
             explorerItems: [],
             itemsViewHeight: platformModule.screen.mainScreen.heightDIPs - 260,
             explorerPathWidth: platformModule.screen.mainScreen.widthDIPs,
-            exerciceLoader: new ExerciseLoader(),
+            googleDriveProvider: new GoogleDriveProvider(),
         }
     },
     async mounted() {
-        const data = await this.exerciceLoader.loadGoogleDriveRootFiles();
-        ///////////////
-        console.log(data);
-        //////////////////
-        data['content'].toJSON()['files'].forEach(fileData => console.log(JSON.stringify(fileData)));
+        await this.googleDriveProvider.loginGoogleDriveIfNeeded();
+        const data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
+
+        this.explorerItems = data['content'].toJSON()['files'];
     },
     methods: {
-        _onExplorerTap(item) {
-
-        },
         _isFolder(item) {
-
+            return item.mimeType === 'application/vnd.google-apps.folder';
         },  
     },
 }
 </script>
 
 <style lang="scss" scoped>
+.explorerPath {
+    font-size: 18;
+    background-color: aquamarine;
+}
+
 .download_thumnail {
     width: 30;
     height: 30;

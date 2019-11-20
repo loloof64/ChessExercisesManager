@@ -33,6 +33,7 @@
     "no_internet_message": "No internet connection : you must resolve this in order to use this feature.",
     "logout_account_title": "Logout from your account ?",
     "logout_account_message": "Do you really want to logout from your Google Drive account ?",
+    "google_drive_title": "Google Drive",
 
     "sample_krr_k": "King+2Rooks/King",
     "sample_kp_kpp": "King+Pawn/King+2Pawns",
