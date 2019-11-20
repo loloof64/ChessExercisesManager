@@ -10,7 +10,7 @@
             </ScrollView>
             <GridLayout>
                 <ScrollView :height="itemsViewHeight" orientation="vertical">
-                    <ListView for="item in explorerItems">
+                    <ListView for="item in explorerItems" @itemTap="_reactToItemTap">
                         <v-template>
                             <StackLayout orientation="horizontal">
                                 <Image src="res://download" class="download_thumnail" />
@@ -49,17 +49,21 @@ export default {
         await this.googleDriveProvider.loginGoogleDriveIfNeeded();
         const data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
 
-        /////////////////////
-        console.log('content');
-        console.log(data['content'].headers);
-        /////////////////////
-
         this.explorerItems = data['content'].toJSON()['files'];
     },
     methods: {
         _isFolder(item) {
             return item.mimeType === 'application/vnd.google-apps.folder';
         },  
+        async _reactToItemTap(event) {
+            const item = event.item;
+            const isAFolder = item.mimeType === 'application/vnd.google-apps.folder';
+
+            if (isAFolder) {
+                const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
+                this.explorerItems = data['content'].toJSON()['files'];
+            }
+        }
     },
 }
 </script>

@@ -116,6 +116,28 @@ export default class GoogleDriveProvider {
             const order = 'folder,name_natural';
             const fields = 'files(id,name,mimeType)';
             const filter = this._escapeHtml("'root' in parents");
+            //const filter = this._escapeHtml("'root' in parents and (mimeType = 'application/vnd.google-apps.folder')");
+
+            httpModule.request({
+                url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
+                },
+            }).then((response) => {
+                resolve(response);
+            }, (e) => {
+                reject(e);
+            });
+        });
+    }
+
+    loadGoogleDriveFolderFiles(folderId) {
+        return new Promise((resolve, reject) => {
+            const order = 'folder,name_natural';
+            const fields = 'files(id,name,mimeType)';
+            const filter = this._escapeHtml(`'${folderId}' in parents`);
+            //const filter = this._escapeHtml("'root' in parents and (mimeType = 'application/vnd.google-apps.folder')");
 
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
