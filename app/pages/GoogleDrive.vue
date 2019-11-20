@@ -49,6 +49,11 @@ export default {
         await this.googleDriveProvider.loginGoogleDriveIfNeeded();
         const data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
 
+        /////////////////////
+        console.log('content');
+        console.log(data['content'].headers);
+        /////////////////////
+
         this.explorerItems = data['content'].toJSON()['files'];
     },
     methods: {
