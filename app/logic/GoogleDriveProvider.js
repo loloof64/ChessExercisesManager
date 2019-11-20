@@ -115,8 +115,7 @@ export default class GoogleDriveProvider {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
             const fields = 'files(id,name,mimeType)';
-            const filter = this._escapeHtml("'root' in parents");
-            //const filter = this._escapeHtml("'root' in parents and (mimeType = 'application/vnd.google-apps.folder')");
+            const filter = this._escapeHtml("'root' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.chess-pgn')");
 
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
@@ -136,8 +135,7 @@ export default class GoogleDriveProvider {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
             const fields = 'files(id,name,mimeType)';
-            const filter = this._escapeHtml(`'${folderId}' in parents`);
-            //const filter = this._escapeHtml("'root' in parents and (mimeType = 'application/vnd.google-apps.folder')");
+            const filter = this._escapeHtml(`'${folderId}' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.chess-pgn')`);
 
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
