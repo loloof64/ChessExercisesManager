@@ -1,5 +1,5 @@
 <template>
-    <Page class="page">
+    <Page class="page" @navigatedTo="onNavigatedTo">
         <ActionBar class="action-bar action-bar-bg">
             <Label class="action-bar-title" :text="'home_title' | L"></Label>
         </ActionBar>
@@ -42,6 +42,7 @@
     );
 
     const fileSystemModule = require("tns-core-modules/file-system");
+    const application = require('application');
 
     import ExerciceLoader from '../logic/ExerciceLoader';
     
@@ -66,12 +67,12 @@
             }
         },
         mounted: function(){
-            //////////////////////////
-            console.log('Home mounted')
-            //////////////////////////
             this.$refs['explorerManager'].updateItems();
         },
         methods: {  
+            onNavigatedTo(args) {
+                this.$refs['explorerManager'].updateItems();
+            },
             async onSampleExerciseTap(exerciseItem) {
                 try {
                     const position = await new ExerciceLoader().loadSampleExercise(exerciseItem.path);

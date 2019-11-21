@@ -1,5 +1,5 @@
 <template>
-    <Page class="page" @loaded="onPageLoaded">
+    <Page class="page">
         <ActionBar class="action-bar action-bar-bg">
             <Label class="action-bar-title" :text="'google_drive_title' | L"></Label>
         </ActionBar>
@@ -48,8 +48,6 @@ import GoogleDriveProvider from '../logic/GoogleDriveProvider';
 const platformModule = require("tns-core-modules/platform");
 const fileSystemModule = require("tns-core-modules/file-system");
 
-const application = require('application');
-
 Vue.filter("L", localize);
 
 export default {
@@ -76,18 +74,6 @@ export default {
         this.explorerItems = data['content'].toJSON()['files'];
     },
     methods: {
-        onPageLoaded() {
-            // We want to force local file explorer reload when going back on Android.
-            if (application.android) {
-                application.android.on(application.AndroidApplication.activityBackPressedEvent, (args) => {
-                    args.cancel = true;
-                    this.$navigator.back();
-                    //////////////////////////
-                    console.log('Going home')
-                    //////////////////////////
-                });
-            }
-        },
         _isFolder(item) {
             return item.mimeType === 'application/vnd.google-apps.folder';
         },  
