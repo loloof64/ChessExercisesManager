@@ -88,7 +88,7 @@
                             folder: true,
                         });
                     }
-                    else if (name.endsWith('.cst')) {
+                    else if (name.endsWith('.pgn')) {
                         explorerItems.push({
                             name, path,
                             folder: false,
@@ -170,8 +170,11 @@
                     this.$navigator.navigate('/google_drive', {
                         transition: {
                             name:'slide',
-                            duration: 200
+                            duration: 200,
                         },
+                        props: {
+                            currentAppFolderPath: this.currentFolder.path,
+                        }
                     });
                 }
                 catch (e) {

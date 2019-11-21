@@ -151,6 +151,40 @@ export default class GoogleDriveProvider {
         });
     }
 
+    getGoogleDriveFileSimpleNameWithExtension(fileId) {
+        return new Promise((resolve, reject) => {
+            const fields = 'name';
+
+            httpModule.request({
+                url: `https://www.googleapis.com/drive/v3/files/${fileId}?fields=${fields}`,
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
+                },
+            }).then((response) => {
+                resolve(response);
+            }, (e) => {
+                reject(e);
+            });
+        });
+    }
+
+    downloadGoogleDriveFile(fileId) {
+        return new Promise((resolve, reject) => {
+            httpModule.request({
+                url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
+                },
+            }).then((response) => {
+                resolve(response);
+            }, (e) => {
+                reject(e);
+            });
+        });
+    }
+
     _escapeHtml(string) {
         let result = string;
         result = result.replace(/!/g, '%21');

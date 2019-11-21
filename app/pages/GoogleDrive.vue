@@ -46,10 +46,17 @@ import { localize } from "nativescript-localize";
 import Vue from "nativescript-vue";
 import GoogleDriveProvider from '../logic/GoogleDriveProvider';
 const platformModule = require("tns-core-modules/platform");
+const fileSystemModule = require("tns-core-modules/file-system");
 
 Vue.filter("L", localize);
 
 export default {
+    props: {
+        currentAppFolderPath : {
+            type: String,
+            default: '',
+        },
+    },
     data() {
         return {
             explorerItems: [],
@@ -74,15 +81,33 @@ export default {
             const item = event.item;
             const isAFolder = item.mimeType === 'application/vnd.google-apps.folder';
 
-            ////////////////////////////////////////
-            console.log(item.id);
-            /////////////////////////////////////////
-
             if (isAFolder) {
                 const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
                 this.explorerItems = data['content'].toJSON()['files'];
                 this.parentFoldersIds.push(item.id);
                 this.parentFoldersNames.push(item.name);
+            }
+            else {
+                try {
+                    const data = await this.googleDriveProvider.downloadGoogleDriveFile(item.id);
+                    const simpleFileNameData = await this.googleDriveProvider.getGoogleDriveFileSimpleNameWithExtension(item.id);
+                    const simpleFileName = simpleFileNameData['content'].toJSON()['name'];
+                    const tempFileData = data['content'].toFile();
+                    const tempFilePath = tempFileData.path;
+
+                    const tempFile = fileSystemModule.File.fromPath(tempFilePath);
+                    const copiedFilePath = fileSystemModule.path.join(this.currentAppFolderPath, simpleFileName);
+                    const copiedFile = fileSystemModule.File.fromPath(copiedFilePath);
+
+                    tempFile.readText().then((result) => {
+                        copiedFile.writeText(result).then((saveResult) => {
+                            console.log(`File ${simpleFileName} copied with success into current folder.`);
+                        });
+                    });
+                }
+                catch (e) {
+                    console.error(e);
+                }
             }
         },
         async _goBackFolder() {
