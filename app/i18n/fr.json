@@ -29,6 +29,11 @@
     "custom_exercises": "Personnels",
     "custom_exercises_root": "exercices://",
 
+    "delete_folder_title": "Supprimer dossier ?",
+    "delete_file_title": "Supprimer fichier ?",
+    "delete_folder_message": "Voulez-vous vraiment supprimer le dossier %s ?",
+    "delete_file_message": "Voulez-vous vraiment supprimer le fichier %s ?",
+
     "no_internet_title": "Aucune connexion internet",
     "no_internet_message": "Aucune connexion internet : il faut résoudre ce problème afin d'accèder à cette fonctionnalité.",
     "logout_account_title": "Se déconnecter du compte ?",

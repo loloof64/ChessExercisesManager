@@ -23,6 +23,12 @@
                 :visibility="isLoggedInGoogleDrive ? 'visible': 'collapse'"
             />
             <Fab
+                class="fab-button hc vb"
+                :backgroundColor="mainActionModeColor"
+                :icon="mainActionModeIcon"
+                @tap="_changeMainActionMode()"
+            />
+            <Fab
                 class="fab-button hr vb"
                 backgroundColor="yellowgreen"
                 icon="res://download"
@@ -44,6 +50,9 @@
 
     Vue.filter("L", localize);
 
+    const EXPLORE_MODE = 'explore';
+    const DELETE_MODE = 'delete';
+
     export default {
         data() {
             return {
@@ -56,6 +65,7 @@
                 generatingPosition: false,
                 googleDriveProvider: new GoogleDriveProvider(),
                 isLoggedInGoogleDrive: false,
+                mainActionMode: EXPLORE_MODE,
             }
         },
         mounted() {
@@ -68,11 +78,36 @@
         },
         methods: {
             _onExplorerTap(explorerItem) {
-                if (explorerItem.folder) {
-                    this._navigateToFolder(explorerItem.path);
+                if (this.mainActionMode === EXPLORE_MODE) {
+                    if (explorerItem.folder) {
+                        this._navigateToFolder(explorerItem.path);
+                    }
+                    else {
+                        this._playGame(explorerItem.path);
+                    }
                 }
-                else {
-                    this._playGame(explorerItem.path);
+                else if (this.mainActionMode === DELETE_MODE) {
+                    const itemName = explorerItem.name;
+                    const isFolder = explorerItem.folder;
+
+                    confirm({
+                        title: localize(isFolder ? 'delete_folder_title' : 'delete_file_title'),
+                        message: localize(isFolder ? 'delete_folder_message' : 'delete_file_message', itemName),
+                        okButtonText: localize('ok_button'),
+                        cancelButtonText: localize('cancel_button'),
+                    }).then(result => {
+                        const currentPath = fileSystemModule.path.join(this.currentFolder.path, itemName);
+                        const item = isFolder ?
+                            fileSystemModule.Folder.fromPath(currentPath):
+                            fileSystemModule.File.fromPath(currentPath)
+                        ;
+
+                        item.remove().then(() => {
+                            console.log(`Deleted ${isFolder ? 'folder' : 'file'} ${itemName}`);
+                            this._updateItems();
+                        })
+                        .catch(err => console.error(err));
+                    });
                 }
             },
 
@@ -227,6 +262,32 @@
                         }
                     }
                 });
+            },
+
+            _changeMainActionMode() {
+                switch (this.mainActionMode) {
+                    case EXPLORE_MODE: this.mainActionMode = DELETE_MODE; break;
+                    case DELETE_MODE: this.mainActionMode = EXPLORE_MODE; break;
+                    default: this.mainActionMode = EXPLORE_MODE;
+                }
+            }
+        },
+
+        computed: {
+            mainActionModeColor() {
+                switch (this.mainActionMode) {
+                    case EXPLORE_MODE: return 'green';
+                    case DELETE_MODE: return 'red';
+                    default: return 'green';
+                }
+            },
+
+            mainActionModeIcon() {
+                switch (this.mainActionMode) {
+                    case EXPLORE_MODE: return 'res://eye';
+                    case DELETE_MODE: return 'res://delete';
+                    default: return 'res://eye';
+                }
             }
         }
     }
@@ -243,6 +304,10 @@
 
     .hl {
         horizontal-align: left;
+    }
+
+    .hc {
+        horizontal-align: center;
     }
 
     .hr {

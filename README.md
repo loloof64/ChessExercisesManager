@@ -13,4 +13,5 @@ Please follow [Alexander Ziskind video](https://www.youtube.com/watch?v=Ix0bXZey
 * saw by Skyclick
 * download by Pixel Perfect
 * logout by dmitri13
-* go-back-arrow, refresh-button by FreePik
+* eye, go-back-arrow, refresh-button by FreePik
+* trash from Kiranshastry

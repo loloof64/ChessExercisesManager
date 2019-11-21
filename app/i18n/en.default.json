@@ -29,6 +29,11 @@
     "custom_exercises": "Custom",
     "custom_exercises_root": "exercises://",
 
+    "delete_folder_title": "Delete folder ?",
+    "delete_file_title": "Delete file ?",
+    "delete_folder_message": "Do you really want to delete folder %s ?",
+    "delete_file_message": "Do you really want to delete file %s ?",
+
     "no_internet_title": "No internet connection",
     "no_internet_message": "No internet connection : you must resolve this in order to use this feature.",
     "logout_account_title": "Logout from your account ?",

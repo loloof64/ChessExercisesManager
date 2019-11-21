@@ -8,6 +8,10 @@
   <string name="logout_account_title">"Se déconnecter du compte ?"</string>
   <string name="no_internet_message">"Aucune connexion internet : il faut résoudre ce problème afin d\'accèder à cette fonctionnalité."</string>
   <string name="no_internet_title">"Aucune connexion internet"</string>
+  <string name="delete_file_message">"Voulez-vous vraiment supprimer le fichier %1$s ?"</string>
+  <string name="delete_folder_message">"Voulez-vous vraiment supprimer le dossier %1$s ?"</string>
+  <string name="delete_file_title">"Supprimer fichier ?"</string>
+  <string name="delete_folder_title">"Supprimer dossier ?"</string>
   <string name="custom_exercises_root">"exercices://"</string>
   <string name="custom_exercises">"Personnels"</string>
   <string name="sample_exercises">"Exemples"</string>
