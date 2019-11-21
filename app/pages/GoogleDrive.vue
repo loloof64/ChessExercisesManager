@@ -28,6 +28,13 @@
                     @tap="_goBackFolder()"
                     :visibility="_goBackFolderVisibility"
                 />
+
+                <Fab
+                    class="fab-button hr vb"
+                    backgroundColor="lightblue"
+                    icon="res://refreshbutton"
+                    @tap="_refreshFolder()"
+                />
             </GridLayout>
         </StackLayout>
 
@@ -77,17 +84,29 @@ export default {
         async _goBackFolder() {
             this.parentFoldersIds.pop();
             this.parentFoldersNames.pop();
+
+            let data;
             
             if (this.parentFoldersIds.length > 0) {
                 const parentItemId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
-                const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(parentItemId);
-                this.explorerItems = data['content'].toJSON()['files'];
+                data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(parentItemId);
             }
             else {
-                const data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
-                this.explorerItems = data['content'].toJSON()['files'];
+                data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
             }
+            this.explorerItems = data['content'].toJSON()['files'];
         },
+        async _refreshFolder() {
+            let data;
+            if (this.parentFoldersIds.length === 0) {
+                data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
+            }
+            else {
+                const currentFolderId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
+                data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(currentFolderId);
+            }
+            this.explorerItems = data['content'].toJSON()['files'];
+        }
     },
     computed: {
         _goBackFolderVisibility() {
