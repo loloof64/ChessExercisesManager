@@ -40,6 +40,7 @@
     const fileSystemModule = require("tns-core-modules/file-system");
 
     import GoogleDriveProvider from '../logic/GoogleDriveProvider';
+    import ExerciceLoader from '../logic/ExerciceLoader';
 
     Vue.filter("L", localize);
 
@@ -160,6 +161,33 @@
                     const targetFolder = fileSystemModule.Folder.fromPath(folderPathString);
                     this.currentFolder = targetFolder;
                     this._updateItems(); 
+                }
+            },
+
+            async _playGame(gamePath) {
+                try {
+                    const position = await new ExerciceLoader().loadExerciseFromAbsolutePath(gamePath);
+                    const gameGoal = '';
+
+                    this.$navigator.navigate('/game', {
+                        transition: {
+                            name:'slide',
+                            duration: 200
+                        },
+                        props: {
+                            position,
+                            gameGoal,
+                        }
+                    });
+                }
+                catch (e) {
+                    alert({
+                        title: localize('exercise_loading_error'),
+                        message: e.error || e,
+                        okButtonText: localize('ok_button')
+                    }).then(() => {
+                        console.error(e.error || e);
+                    })
                 }
             },
 
