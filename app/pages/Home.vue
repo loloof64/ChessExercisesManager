@@ -1,11 +1,11 @@
 <template>
     <Page class="page">
-        <ActionBar class="action-bar">
+        <ActionBar class="action-bar action-bar-bg">
             <Label class="action-bar-title" :text="'home_title' | L"></Label>
         </ActionBar>
 
         <StackLayout orientation="vertical">
-            <TabView selectedIndex="0">
+            <TabView selectedIndex="0" @selectedIndexChange="updateExplorerIfNeeded">
                 <TabViewItem :title="'sample_exercises' | L"
                 iconSource="res://bookshelf">
                     <GridLayout>
@@ -63,12 +63,13 @@
                     },
                 ],
                 busy: false,
-                explorerItems: [],
             }
         },
-        async mounted() {
-            this.explorerItems = await this.$refs['explorerManager'].getItems();
-            this.explorerPath = this.$refs['explorerManager'].getShortenedPath();
+        mounted: function(){
+            //////////////////////////
+            console.log('Home mounted')
+            //////////////////////////
+            this.$refs['explorerManager'].updateItems();
         },
         methods: {  
             async onSampleExerciseTap(exerciseItem) {
@@ -97,6 +98,11 @@
                     })
                 }
             },
+            updateExplorerIfNeeded(event) {
+                if (event.value === 1) {
+                    this.$refs['explorerManager'].updateItems();
+                }
+            }
         },
         components: {FileExplorer,},
     };
@@ -104,4 +110,8 @@
 
 <style scoped lang="scss">
     @import '../app-variables';
+
+    .action-bar-bg {
+        background-color: yellowgreen;
+    }
 </style>

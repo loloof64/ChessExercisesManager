@@ -86,7 +86,7 @@
             const rootFolder = currentAppFolder.getFolder('personnal_exercises');
             this.exercisesRootFolder = rootFolder;
             this.currentFolder = rootFolder;
-            this._updateItems();
+            this.updateItems();
             this.isLoggedInGoogleDrive = this.googleDriveProvider.isLoggedInGoogleDrive();
         },
         methods: {
@@ -118,7 +118,7 @@
 
                             item.remove().then(() => {
                                 console.log(`Deleted ${isFolder ? 'folder' : 'file'} ${itemName}`);
-                                this._updateItems();
+                                this.updateItems();
                             })
                             .catch(err => console.error(err));
                         }
@@ -182,7 +182,7 @@
                 return path.replace(this.exercisesRootFolder.path, localize('custom_exercises_root'))
             },
 
-            async _updateItems() {
+            async updateItems() {
                 this.explorerItems = await this._getItems();
                 // Also triggers VueJS change detection
                 this.explorerItems.splice(this.explorerItems.length);
@@ -196,13 +196,13 @@
             _navigateToFolder(folderPathString) {
                 const targetFolder = fileSystemModule.Folder.fromPath(folderPathString);
                 this.currentFolder = targetFolder;
-                this._updateItems(); 
+                this.updateItems(); 
             },
 
             _goBackFolder() {
                 if (this.currentFolder !== this.rootFolder) {
                     this.currentFolder = this.currentFolder.parent;
-                    this._updateItems();
+                    this.updateItems();
                 }
             },
 
@@ -291,7 +291,7 @@
                         const name = result.text;
                         if (name.length > 0) {
                             this.currentFolder.getFolder(name);
-                            this._updateItems();
+                            this.updateItems();
                             console.log('Created folder '+name+' in current folder.');
                         }
                     }
