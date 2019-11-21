@@ -6,7 +6,7 @@
 
         <StackLayout>
             <ScrollView :width="explorerPathWidth" height="30" orientation="horizontal">
-                <Label :text="explorerPath" class="explorerPath" textWrap="true" />
+                <Label :text="_explorerPath" class="explorerPath" textWrap="true" />
             </ScrollView>
             <GridLayout>
                 <ScrollView :height="itemsViewHeight" orientation="vertical">
@@ -26,7 +26,7 @@
                     backgroundColor="yellow"
                     icon="res://gobackarrow"
                     @tap="_goBackFolder()"
-                    :visibility="_goBackFolderVisibility()"
+                    :visibility="_goBackFolderVisibility"
                 />
             </GridLayout>
         </StackLayout>
@@ -45,9 +45,9 @@ Vue.filter("L", localize);
 export default {
     data() {
         return {
-            explorerPath: '',
             explorerItems: [],
             parentFoldersIds: [],
+            parentFoldersNames: [],
             itemsViewHeight: platformModule.screen.mainScreen.heightDIPs - 200,
             explorerPathWidth: platformModule.screen.mainScreen.widthDIPs,
             googleDriveProvider: new GoogleDriveProvider(),
@@ -71,10 +71,13 @@ export default {
                 const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
                 this.explorerItems = data['content'].toJSON()['files'];
                 this.parentFoldersIds.push(item.id);
+                this.parentFoldersNames.push(item.name);
             }
         },
         async _goBackFolder() {
             this.parentFoldersIds.pop();
+            this.parentFoldersNames.pop();
+            
             if (this.parentFoldersIds.length > 0) {
                 const parentItemId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
                 const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(parentItemId);
@@ -85,8 +88,13 @@ export default {
                 this.explorerItems = data['content'].toJSON()['files'];
             }
         },
+    },
+    computed: {
         _goBackFolderVisibility() {
             return this.parentFoldersIds.length > 0 ? 'visible' : 'collapse';
+        },
+        _explorerPath() {
+            return '/' + this.parentFoldersNames.join('/');
         }
     },
 }
@@ -96,6 +104,7 @@ export default {
 .explorerPath {
     font-size: 18;
     background-color: aquamarine;
+    padding: 2 8;
 }
 
 .download_thumnail {
