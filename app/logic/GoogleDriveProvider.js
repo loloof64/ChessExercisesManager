@@ -114,8 +114,8 @@ export default class GoogleDriveProvider {
     loadGoogleDriveRootFiles() {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
-            const fields = 'files(id,name,mimeType)';
-            const filter = this._escapeHtml("trashed = false and 'root' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.chess-pgn')");
+            const fields = 'files(id,name,mimeType,fileExtension)';
+            const filter = this._escapeHtml("trashed = false and 'root' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')");
 
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
@@ -134,8 +134,8 @@ export default class GoogleDriveProvider {
     loadGoogleDriveFolderFiles(folderId) {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
-            const fields = 'files(id,name,mimeType)';
-            const filter = this._escapeHtml(`trashed = false and '${folderId}' in parents and (mimeType = 'application/vnd.google-apps.folder' or mimeType = 'application/vnd.chess-pgn')`);
+            const fields = 'files(id,name,mimeType,fileExtension)';
+            const filter = this._escapeHtml(`trashed = false and '${folderId}' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')`);
 
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,

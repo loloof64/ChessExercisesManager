@@ -74,6 +74,10 @@ export default {
             const item = event.item;
             const isAFolder = item.mimeType === 'application/vnd.google-apps.folder';
 
+            ////////////////////////////////////////
+            console.log(item.id);
+            /////////////////////////////////////////
+
             if (isAFolder) {
                 const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
                 this.explorerItems = data['content'].toJSON()['files'];
