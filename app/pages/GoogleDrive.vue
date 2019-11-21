@@ -1,6 +1,6 @@
 <template>
     <Page class="page">
-        <ActionBar class="action-bar">
+        <ActionBar class="action-bar action-bar-bg">
             <Label class="action-bar-title" :text="'google_drive_title' | L"></Label>
         </ActionBar>
 
@@ -149,6 +149,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.action-bar-bg {
+    background-color: orangered;
+}
+
 .explorerPath {
     font-size: 18;
     background-color: aquamarine;

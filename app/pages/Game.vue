@@ -1,6 +1,6 @@
 <template>
     <Page class="page">
-        <ActionBar class="action-bar">
+        <ActionBar class="action-bar action-bar-bg">
             <Label class="action-bar-title" :text="'game_title' | L"></Label>
         </ActionBar>
 
@@ -175,6 +175,10 @@
 
 <style scoped lang="scss">
     @import '../app-variables';
+
+    .action-bar-bg {
+        background-color: green;
+    }
 
     .fa {
         color: $accent-dark;
