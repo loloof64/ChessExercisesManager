@@ -16,6 +16,13 @@
                 </ListView>
             </ScrollView>
             <Fab
+                class="fab-button hl vt"
+                backgroundColor="yellow"
+                icon="res://gobackarrow"
+                @tap="_goBackFolder()"
+                :visibility="_goBackFolderVisibility"
+            />
+            <Fab
                 class="fab-button hr vt"
                 backgroundColor="purple"
                 icon="res://logout"
@@ -146,15 +153,6 @@
                     return fst.name.localeCompare(snd.name, this._getLocale(), {sentitivity: "base"});
                 });
 
-                const weCanGoUp = this.currentFolder.path !== this.exercisesRootFolder.path;
-                if (weCanGoUp) {
-                    updatedItems.unshift({
-                        name: '..',
-                        path: '..',
-                        folder: true,
-                    });
-                }
-
                 return updatedItems;
             },
 
@@ -196,14 +194,15 @@
             },
 
             _navigateToFolder(folderPathString) {
-                if (folderPathString === '..') {
+                const targetFolder = fileSystemModule.Folder.fromPath(folderPathString);
+                this.currentFolder = targetFolder;
+                this._updateItems(); 
+            },
+
+            _goBackFolder() {
+                if (this.currentFolder !== this.rootFolder) {
                     this.currentFolder = this.currentFolder.parent;
                     this._updateItems();
-                }
-                else {
-                    const targetFolder = fileSystemModule.Folder.fromPath(folderPathString);
-                    this.currentFolder = targetFolder;
-                    this._updateItems(); 
                 }
             },
 
@@ -315,6 +314,11 @@
                     case DELETE_MODE: return 'res://delete';
                     default: return 'res://eye';
                 }
+            },
+
+            _goBackFolderVisibility() {
+                const weCanGoUp = this.exercisesRootFolder && (this.currentFolder.path !== this.exercisesRootFolder.path);
+                return weCanGoUp ? 'visible' : 'collapse';
             }
         }
     }
