@@ -29,6 +29,8 @@
     "custom_exercises": "Personnels",
     "custom_exercises_root": "exercices://",
 
+    "new_folder_title": "Nouveau dossier",
+    "new_folder_message": "Nom du nouveau dossier ?",
     "delete_folder_title": "Supprimer dossier ?",
     "delete_file_title": "Supprimer fichier ?",
     "delete_folder_message": "Voulez-vous vraiment supprimer le dossier %s ?",

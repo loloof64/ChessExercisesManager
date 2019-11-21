@@ -16,11 +16,17 @@
                 </ListView>
             </ScrollView>
             <Fab
-                class="fab-button hl vb"
+                class="fab-button hr vt"
                 backgroundColor="purple"
                 icon="res://logout"
                 @tap="_logoutGoogleDrive()"
                 :visibility="isLoggedInGoogleDrive ? 'visible': 'collapse'"
+            />
+            <Fab
+                class="fab-button hl vb"
+                backgroundColor="blue"
+                icon="res://folder"
+                @tap="_createNewFolder()"
             />
             <Fab
                 class="fab-button hc vb"
@@ -270,6 +276,25 @@
                     case DELETE_MODE: this.mainActionMode = EXPLORE_MODE; break;
                     default: this.mainActionMode = EXPLORE_MODE;
                 }
+            },
+
+            _createNewFolder() {
+                prompt({
+                    title: localize('new_folder_title'),
+                    message: localize('new_folder_message'),
+                    okButtonText: localize('ok_button'),
+                    cancelButtonText: localize('cancel_button'),
+                    defaultText: "",
+                }).then(result => {
+                    if (result.result) {
+                        const name = result.text;
+                        if (name.length > 0) {
+                            this.currentFolder.getFolder(name);
+                            this._updateItems();
+                            console.log('Created folder '+name+' in current folder.');
+                        }
+                    }
+                });
             }
         },
 
@@ -312,6 +337,10 @@
 
     .hr {
         horizontal-align: right;
+    }
+
+    .vt {
+        vertical-align: top;
     }
 
     .vb {

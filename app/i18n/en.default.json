@@ -29,6 +29,8 @@
     "custom_exercises": "Custom",
     "custom_exercises_root": "exercises://",
 
+    "new_folder_title": "New folder",
+    "new_folder_message": "Folder name ?",
     "delete_folder_title": "Delete folder ?",
     "delete_file_title": "Delete file ?",
     "delete_folder_message": "Do you really want to delete folder %s ?",

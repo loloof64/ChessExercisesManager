@@ -12,6 +12,8 @@
   <string name="delete_folder_message">"Voulez-vous vraiment supprimer le dossier %1$s ?"</string>
   <string name="delete_file_title">"Supprimer fichier ?"</string>
   <string name="delete_folder_title">"Supprimer dossier ?"</string>
+  <string name="new_folder_message">"Nom du nouveau dossier ?"</string>
+  <string name="new_folder_title">"Nouveau dossier"</string>
   <string name="custom_exercises_root">"exercices://"</string>
   <string name="custom_exercises">"Personnels"</string>
   <string name="sample_exercises">"Exemples"</string>
