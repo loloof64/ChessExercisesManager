@@ -102,17 +102,19 @@
                         okButtonText: localize('ok_button'),
                         cancelButtonText: localize('cancel_button'),
                     }).then(result => {
-                        const currentPath = fileSystemModule.path.join(this.currentFolder.path, itemName);
-                        const item = isFolder ?
-                            fileSystemModule.Folder.fromPath(currentPath):
-                            fileSystemModule.File.fromPath(currentPath)
-                        ;
+                        if (result) {
+                            const currentPath = fileSystemModule.path.join(this.currentFolder.path, itemName);
+                            const item = isFolder ?
+                                fileSystemModule.Folder.fromPath(currentPath):
+                                fileSystemModule.File.fromPath(currentPath)
+                            ;
 
-                        item.remove().then(() => {
-                            console.log(`Deleted ${isFolder ? 'folder' : 'file'} ${itemName}`);
-                            this._updateItems();
-                        })
-                        .catch(err => console.error(err));
+                            item.remove().then(() => {
+                                console.log(`Deleted ${isFolder ? 'folder' : 'file'} ${itemName}`);
+                                this._updateItems();
+                            })
+                            .catch(err => console.error(err));
+                        }
                     });
                 }
             },
