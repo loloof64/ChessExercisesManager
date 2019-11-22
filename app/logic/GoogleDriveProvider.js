@@ -1,6 +1,7 @@
 const connectivityModule = require("tns-core-modules/connectivity");
 const fileSystemModule = require("tns-core-modules/file-system");
 const httpModule = require("tns-core-modules/http");
+const Toast = require("nativescript-toast");
 import { TnsOAuthClient } from "nativescript-oauth2";
 import { localize } from "nativescript-localize";
 
@@ -111,7 +112,7 @@ export default class GoogleDriveProvider {
         }
     }
 
-    loadGoogleDriveRootFiles() {
+    getGoogleDriveRootFiles() {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
             const fields = 'files(id,name,mimeType,fileExtension)';
@@ -124,14 +125,14 @@ export default class GoogleDriveProvider {
                     Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
                 },
             }).then((response) => {
-                resolve(response);
+                resolve(response['content'].toJSON()['files']);
             }, (e) => {
                 reject(e);
             });
         });
     }
 
-    loadGoogleDriveFolderFiles(folderId) {
+    getGoogleDriveInnerFolderFiles(folderId) {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
             const fields = 'files(id,name,mimeType,fileExtension)';
@@ -144,7 +145,7 @@ export default class GoogleDriveProvider {
                     Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
                 },
             }).then((response) => {
-                resolve(response);
+                resolve(response['content'].toJSON()['files']);
             }, (e) => {
                 reject(e);
             });
@@ -169,7 +170,7 @@ export default class GoogleDriveProvider {
         });
     }
 
-    downloadGoogleDriveFile(fileId) {
+    downloadGoogleDriveFileIntoPath({fileId, destinationPath, mustNotifyUser}) {
         return new Promise((resolve, reject) => {
             httpModule.request({
                 url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
@@ -177,8 +178,105 @@ export default class GoogleDriveProvider {
                 headers: {
                     Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
                 },
+            }).then(async(response) => {
+                try {
+                    const simpleFileNameData = await this.getGoogleDriveFileSimpleNameWithExtension(fileId);
+                    const simpleFileName = simpleFileNameData['content'].toJSON()['name'];
+                    const tempFileData = response['content'].toFile();
+                    const tempFilePath = tempFileData.path;
+
+                    const tempFile = fileSystemModule.File.fromPath(tempFilePath);
+                    const copiedFilePath = fileSystemModule.path.join(destinationPath, simpleFileName);
+                    const copiedFile = fileSystemModule.File.fromPath(copiedFilePath);
+
+                    tempFile.readText().then((result) => {
+                        copiedFile.writeText(result).then((saveResult) => {
+                            console.log(`File ${simpleFileName} copied with success into folder ${destinationPath}.`);
+                            if (mustNotifyUser) {
+                                const toast = Toast.makeText(localize('copied_cloud_file_in_local_storage', simpleFileName));
+                                toast.show();
+                            }
+                        });
+                    });
+                    resolve(response);
+                }
+                catch (e) {
+                    reject(e);
+                }
+            }, (e) => {
+                reject(e);
+            });
+        });
+    }
+
+    downloadGoogleDriveFolderIntoPath({folderId, destinationPath, mustNotifyUser}) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const newFolderData = await this._getGoogleDriveFolderElementData(folderId);
+                if (newFolderData.mimeType !== 'application/vnd.google-apps.folder') {
+                    reject('Requested element is not a folder !');
+                }
+                
+                const newFolderName = newFolderData.name;
+                const newFolderPath = fileSystemModule.path.join(destinationPath, newFolderName);
+                fileSystemModule.Folder.fromPath(newFolderPath); // Creates folder
+
+                const folderElements = await this.getGoogleDriveInnerFolderFiles(folderId);
+                
+                folderElements.forEach(async element => {
+                    try {
+                        await this._downloadGoogleDriveFolderElement(element.id, newFolderPath);
+                    }
+                    catch (e) {
+                        reject(e);
+                    }
+                });
+
+                console.log(`Folder ${newFolderName} copied with success in ${destinationPath}`);
+                if (mustNotifyUser) {
+                    const toast = Toast.makeText(localize('copied_cloud_folder_in_local_storage', newFolderName));
+                    toast.show();
+                }              
+                resolve();
+            }
+            catch (err) {
+                reject(err);
+            }
+        });
+    }
+
+    _downloadGoogleDriveFolderElement(elementId, destinationPath) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const elementData = await this._getGoogleDriveFolderElementData(elementId);
+                const isFolder = elementData.mimeType === 'application/vnd.google-apps.folder';
+
+                if (isFolder) {
+                    await this.downloadGoogleDriveFolderIntoPath({folderId: elementId, destinationPath, mustNotifyUser: false});
+                }
+                else {
+                    await this.downloadGoogleDriveFileIntoPath({fileId: elementId, destinationPath, mustNotifyUser: false});
+                }
+
+                resolve();
+            }
+            catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    _getGoogleDriveFolderElementData(elementId) {
+        return new Promise((resolve, reject) => {
+            const fields = 'id,name,mimeType';
+            httpModule.request({
+                url: `https://www.googleapis.com/drive/v3/files/${elementId}?fields=${fields}`,
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
+                },
             }).then((response) => {
-                resolve(response);
+                resolve(response['content'].toJSON());
             }, (e) => {
                 reject(e);
             });

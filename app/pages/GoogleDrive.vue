@@ -53,7 +53,6 @@ import Vue from "nativescript-vue";
 import GoogleDriveProvider from '../logic/GoogleDriveProvider';
 const platformModule = require("tns-core-modules/platform");
 const fileSystemModule = require("tns-core-modules/file-system");
-const Toast = require("nativescript-toast");
 
 Vue.filter("L", localize);
 
@@ -80,7 +79,7 @@ export default {
     },
     async mounted() {
         await this.googleDriveProvider.loginGoogleDriveIfNeeded();
-        const data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
+        const data = await this.googleDriveProvider.getGoogleDriveRootFiles();
 
         this.explorerItems = data['content'].toJSON()['files'];
     },
@@ -94,39 +93,23 @@ export default {
 
             if (this.mainActionMode === EXPLORE_MODE) {
                 if (isAFolder) {
-                    const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
-                    this.explorerItems = data['content'].toJSON()['files'];
+                    const data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(item.id);
+                    this.explorerItems = data;
                     this.parentFoldersIds.push(item.id);
                     this.parentFoldersNames.push(item.name);
                 }
             }
-            else {
-                if (isAFolder) {
-
+            else { // this.mainActionMode === DOWNLOAD_MODE
+                try {
+                    if (isAFolder) {
+                        await this.googleDriveProvider.downloadGoogleDriveFolderIntoPath({folderId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
+                    }
+                    else {
+                        await this.googleDriveProvider.downloadGoogleDriveFileIntoPath({fileId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
+                    }
                 }
-                else {
-                    try {
-                        const data = await this.googleDriveProvider.downloadGoogleDriveFile(item.id);
-                        const simpleFileNameData = await this.googleDriveProvider.getGoogleDriveFileSimpleNameWithExtension(item.id);
-                        const simpleFileName = simpleFileNameData['content'].toJSON()['name'];
-                        const tempFileData = data['content'].toFile();
-                        const tempFilePath = tempFileData.path;
-
-                        const tempFile = fileSystemModule.File.fromPath(tempFilePath);
-                        const copiedFilePath = fileSystemModule.path.join(this.currentAppFolderPath, simpleFileName);
-                        const copiedFile = fileSystemModule.File.fromPath(copiedFilePath);
-
-                        tempFile.readText().then((result) => {
-                            copiedFile.writeText(result).then((saveResult) => {
-                                console.log(`File ${simpleFileName} copied with success into current folder.`);
-                                const toast = Toast.makeText(localize('copied_cloud_file_in_local_storage', simpleFileName));
-                                toast.show();
-                            });
-                        });
-                    }
-                    catch (e) {
-                        console.error(e);
-                    }
+                catch (e) {
+                    console.error(e);
                 }
             }
         },
@@ -138,23 +121,23 @@ export default {
             
             if (this.parentFoldersIds.length > 0) {
                 const parentItemId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
-                data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(parentItemId);
+                data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(parentItemId);
             }
             else {
-                data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
+                data = await this.googleDriveProvider.getGoogleDriveRootFiles();
             }
-            this.explorerItems = data['content'].toJSON()['files'];
+            this.explorerItems = data;
         },
         async _refreshFolder() {
             let data;
             if (this.parentFoldersIds.length === 0) {
-                data = await this.googleDriveProvider.loadGoogleDriveRootFiles();
+                data = await this.googleDriveProvider.getGoogleDriveRootFiles();
             }
             else {
                 const currentFolderId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
-                data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(currentFolderId);
+                data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(currentFolderId);
             }
-            this.explorerItems = data['content'].toJSON()['files'];
+            this.explorerItems = data;
         },
         _changeMainActionMode() {
             switch(this.mainActionMode) {
