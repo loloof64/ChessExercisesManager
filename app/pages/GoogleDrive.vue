@@ -13,7 +13,6 @@
                     <ListView for="item in explorerItems" @itemTap="_reactToItemTap">
                         <v-template>
                             <StackLayout orientation="horizontal">
-                                <Image src="res://download" class="download_thumnail" />
                                 <Image v-if="_isFolder(item)" src="res://folder" class="type_thumbnail" />
                                 <Image v-else src="res://file" class="type_thumbnail" />
                                 <Label :text="item.name" class="item_label" />
@@ -27,6 +26,13 @@
                     icon="res://gobackarrow"
                     @tap="_goBackFolder()"
                     :visibility="_goBackFolderVisibility"
+                />
+
+                <Fab
+                    class="fab-button hc vb"
+                    :backgroundColor="mainActionModeColor"
+                    :icon="mainActionModeIcon"
+                    @tap="_changeMainActionMode()"
                 />
 
                 <Fab
@@ -51,6 +57,9 @@ const Toast = require("nativescript-toast");
 
 Vue.filter("L", localize);
 
+const EXPLORE_MODE = 'explore';
+const DOWNLOAD_MODE = 'donwload';
+
 export default {
     props: {
         currentAppFolderPath : {
@@ -66,6 +75,7 @@ export default {
             itemsViewHeight: platformModule.screen.mainScreen.heightDIPs - 200,
             explorerPathWidth: platformModule.screen.mainScreen.widthDIPs,
             googleDriveProvider: new GoogleDriveProvider(),
+            mainActionMode: EXPLORE_MODE,
         }
     },
     async mounted() {
@@ -82,34 +92,41 @@ export default {
             const item = event.item;
             const isAFolder = item.mimeType === 'application/vnd.google-apps.folder';
 
-            if (isAFolder) {
-                const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
-                this.explorerItems = data['content'].toJSON()['files'];
-                this.parentFoldersIds.push(item.id);
-                this.parentFoldersNames.push(item.name);
+            if (this.mainActionMode === EXPLORE_MODE) {
+                if (isAFolder) {
+                    const data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(item.id);
+                    this.explorerItems = data['content'].toJSON()['files'];
+                    this.parentFoldersIds.push(item.id);
+                    this.parentFoldersNames.push(item.name);
+                }
             }
             else {
-                try {
-                    const data = await this.googleDriveProvider.downloadGoogleDriveFile(item.id);
-                    const simpleFileNameData = await this.googleDriveProvider.getGoogleDriveFileSimpleNameWithExtension(item.id);
-                    const simpleFileName = simpleFileNameData['content'].toJSON()['name'];
-                    const tempFileData = data['content'].toFile();
-                    const tempFilePath = tempFileData.path;
+                if (isAFolder) {
 
-                    const tempFile = fileSystemModule.File.fromPath(tempFilePath);
-                    const copiedFilePath = fileSystemModule.path.join(this.currentAppFolderPath, simpleFileName);
-                    const copiedFile = fileSystemModule.File.fromPath(copiedFilePath);
-
-                    tempFile.readText().then((result) => {
-                        copiedFile.writeText(result).then((saveResult) => {
-                            console.log(`File ${simpleFileName} copied with success into current folder.`);
-                            const toast = Toast.makeText(localize('copied_cloud_file_in_local_storage', simpleFileName));
-                            toast.show();
-                        });
-                    });
                 }
-                catch (e) {
-                    console.error(e);
+                else {
+                    try {
+                        const data = await this.googleDriveProvider.downloadGoogleDriveFile(item.id);
+                        const simpleFileNameData = await this.googleDriveProvider.getGoogleDriveFileSimpleNameWithExtension(item.id);
+                        const simpleFileName = simpleFileNameData['content'].toJSON()['name'];
+                        const tempFileData = data['content'].toFile();
+                        const tempFilePath = tempFileData.path;
+
+                        const tempFile = fileSystemModule.File.fromPath(tempFilePath);
+                        const copiedFilePath = fileSystemModule.path.join(this.currentAppFolderPath, simpleFileName);
+                        const copiedFile = fileSystemModule.File.fromPath(copiedFilePath);
+
+                        tempFile.readText().then((result) => {
+                            copiedFile.writeText(result).then((saveResult) => {
+                                console.log(`File ${simpleFileName} copied with success into current folder.`);
+                                const toast = Toast.makeText(localize('copied_cloud_file_in_local_storage', simpleFileName));
+                                toast.show();
+                            });
+                        });
+                    }
+                    catch (e) {
+                        console.error(e);
+                    }
                 }
             }
         },
@@ -138,15 +155,39 @@ export default {
                 data = await this.googleDriveProvider.loadGoogleDriveFolderFiles(currentFolderId);
             }
             this.explorerItems = data['content'].toJSON()['files'];
-        }
+        },
+        _changeMainActionMode() {
+            switch(this.mainActionMode) {
+                case EXPLORE_MODE: this.mainActionMode = DOWNLOAD_MODE; break;
+                case DOWNLOAD_MODE: this.mainActionMode = EXPLORE_MODE; break;
+                default: this.mainActionMode = EXPLORE_MODE;
+            }
+        },
     },
     computed: {
+        mainActionModeColor() {
+            switch (this.mainActionMode) {
+                case EXPLORE_MODE: return 'green';
+                case DOWNLOAD_MODE: return 'orange';
+                default: return 'green';
+            }
+        },
+
+        mainActionModeIcon() {
+            switch (this.mainActionMode) {
+                case EXPLORE_MODE: return 'res://eye';
+                case DOWNLOAD_MODE: return 'res://download';
+                default: return 'res://eye';
+            }
+        },
+
         _goBackFolderVisibility() {
             return this.parentFoldersIds.length > 0 ? 'visible' : 'collapse';
         },
+
         _explorerPath() {
             return '/' + this.parentFoldersNames.join('/');
-        }
+        },
     },
 }
 </script>
@@ -189,6 +230,10 @@ export default {
 
 .hl {
     horizontal-align: left;
+}
+
+.hc {
+    horizontal-align: center;
 }
 
 .hr {
