@@ -47,6 +47,7 @@ import Vue from "nativescript-vue";
 import GoogleDriveProvider from '../logic/GoogleDriveProvider';
 const platformModule = require("tns-core-modules/platform");
 const fileSystemModule = require("tns-core-modules/file-system");
+const Toast = require("nativescript-toast");
 
 Vue.filter("L", localize);
 
@@ -102,6 +103,8 @@ export default {
                     tempFile.readText().then((result) => {
                         copiedFile.writeText(result).then((saveResult) => {
                             console.log(`File ${simpleFileName} copied with success into current folder.`);
+                            const toast = Toast.makeText(localize('copied_cloud_file_in_local_storage', simpleFileName));
+                            toast.show();
                         });
                     });
                 }

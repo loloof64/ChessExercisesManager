@@ -41,7 +41,7 @@
     "logout_account_title": "Se déconnecter du compte ?",
     "logout_account_message": "Voulez-vous vraiment vous déconnecter de votre compte Google Drive ?",
     "google_drive_title": "Google Drive",
-
+    "copied_cloud_file_in_local_storage": "Fichier %s copié dans le dossier local courant.",
 
     "sample_krr_k": "Roi+2Tours/Roi",
     "sample_kp_kpp": "Roi+Pion/Roi+2Pions",
