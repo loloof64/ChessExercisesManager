@@ -119,7 +119,7 @@ export default class GoogleDriveProvider {
             const filter = this._escapeHtml("trashed = false and 'root' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')");
 
             httpModule.request({
-                url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
+                url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
@@ -139,7 +139,7 @@ export default class GoogleDriveProvider {
             const filter = this._escapeHtml(`trashed = false and '${folderId}' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')`);
 
             httpModule.request({
-                url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}&pageSize=20`,
+                url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
@@ -163,7 +163,7 @@ export default class GoogleDriveProvider {
                     Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
                 },
             }).then((response) => {
-                resolve(response);
+                resolve(response['content'].toJSON()['name']);
             }, (e) => {
                 reject(e);
             });
@@ -180,8 +180,8 @@ export default class GoogleDriveProvider {
                 },
             }).then(async(response) => {
                 try {
-                    const simpleFileNameData = await this.getGoogleDriveFileSimpleNameWithExtension(fileId);
-                    const simpleFileName = simpleFileNameData['content'].toJSON()['name'];
+                    const simpleFileName = await this.getGoogleDriveFileSimpleNameWithExtension(fileId);
+
                     const tempFileData = response['content'].toFile();
                     const tempFilePath = tempFileData.path;
 
