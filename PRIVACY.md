@@ -23,3 +23,7 @@ Les seules données que l'application stocke sont dans les fichiers que l'utilis
 Aucune donnée sur le périphérique ou sur l'utilisateur n'est envoyée à quelque tierce application ou site internet.
 
 Veuillez également noter que bien que vous êtes invité à renseigner votre email et mot de passe pour vous connecter aux services de stockage en ligne, aucune de ces données n'est stockée sur le périphérique : seul l'identifiant d'autorisation d'utilisation par l'application.
+
+## Contact
+
+Si vous avez quelconque question à propos de cette politique de confidentialité, veuillez me contacter à laurent.bernabe@gmail.com .
