@@ -127,86 +127,155 @@ export default class GoogleDriveProvider {
             }).then((response) => {
                 resolve(response['content'].toJSON()['files']);
             }, (e) => {
+                console.error(e);
                 reject(e);
             });
         });
     }
 
-    getGoogleDriveInnerFolderFiles(folderId) {
-        return new Promise((resolve, reject) => {
-            const order = 'folder,name_natural';
-            const fields = 'files(id,name,mimeType,fileExtension)';
-            const filter = this._escapeHtml(`trashed = false and '${folderId}' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')`);
-
-            httpModule.request({
-                url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
-                },
-            }).then((response) => {
-                resolve(response['content'].toJSON()['files']);
-            }, (e) => {
-                reject(e);
-            });
-        });
-    }
-
-    getGoogleDriveFileSimpleNameWithExtension(fileId) {
-        return new Promise((resolve, reject) => {
-            const fields = 'name';
-
-            httpModule.request({
-                url: `https://www.googleapis.com/drive/v3/files/${fileId}?fields=${fields}`,
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
-                },
-            }).then((response) => {
-                resolve(response['content'].toJSON()['name']);
-            }, (e) => {
-                reject(e);
-            });
-        });
-    }
-
-    downloadGoogleDriveFileIntoPath({fileId, destinationPath, mustNotifyUser}) {
-        return new Promise((resolve, reject) => {
-            httpModule.request({
-                url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
-                },
-            }).then(async(response) => {
-                try {
-                    const simpleFileName = await this.getGoogleDriveFileSimpleNameWithExtension(fileId);
-
-                    const tempFileData = response['content'].toFile();
-                    const tempFilePath = tempFileData.path;
-
-                    const tempFile = fileSystemModule.File.fromPath(tempFilePath);
-                    const copiedFilePath = fileSystemModule.path.join(destinationPath, simpleFileName);
-                    const copiedFile = fileSystemModule.File.fromPath(copiedFilePath);
-
-                    tempFile.readText().then((result) => {
-                        copiedFile.writeText(result).then((saveResult) => {
-                            console.log(`File ${simpleFileName} copied with success into folder ${destinationPath}.`);
-                            if (mustNotifyUser) {
-                                const toast = Toast.makeText(localize('copied_cloud_file_in_local_storage', simpleFileName));
-                                toast.show();
-                            }
-                        });
-                    });
+    async getGoogleDriveInnerFolderFiles(folderId) {
+        const that = this;
+        function baseRequest() {
+            return new Promise((resolve, reject) => {
+                const order = 'folder,name_natural';
+                const fields = 'files(id,name,mimeType,fileExtension)';
+                const filter = that._escapeHtml(`trashed = false and '${folderId}' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')`);
+    
+                httpModule.request({
+                    url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                    },
+                }).then((response) => {
                     resolve(response);
-                }
-                catch (e) {
+                }, (e) => {
+                    console.error(e);
                     reject(e);
-                }
-            }, (e) => {
-                reject(e);
+                });
             });
-        });
+        }
+        
+        // Using the exponentional backoff technic.
+        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
+        for (let waitingTime of waitingTimesSeconds) {
+            try {
+                setTimeout(() => {}, waitingTime * 1000);
+                const response = await baseRequest();
+                const responseIsGood = response.statusCode !== 403;
+                if (responseIsGood) {
+                    return response['content'].toJSON()['files'];
+                }
+            }
+            catch (e) {
+                console.error(e);
+                return;
+            }
+        }
+
+    }
+
+    async getGoogleDriveFileSimpleNameWithExtension(fileId) {
+        const that = this;
+        function baseRequest() {
+            return new Promise((resolve, reject) => {
+                const fields = 'name';
+    
+                httpModule.request({
+                    url: `https://www.googleapis.com/drive/v3/files/${fileId}?fields=${fields}`,
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                    },
+                }).then((response) => {
+                    resolve(response);
+                }, (e) => {
+                    console.error(e);
+                    reject(e);
+                });
+            });
+        }
+
+        // Using the exponentional backoff technic.
+        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
+        for (let waitingTime of waitingTimesSeconds) {
+            try {
+                setTimeout(() => {}, waitingTime * 1000);
+                const response = await baseRequest();
+                const responseIsGood = response.statusCode !== 403;
+                if (responseIsGood) {
+                    return response['content'].toJSON()['name'];
+                }
+            }
+            catch (e) {
+                console.error(e);
+                return;
+            }
+        }
+
+    }
+
+    async downloadGoogleDriveFileIntoPath({fileId, destinationPath, mustNotifyUser}) {
+        const that = this;
+        function baseRequest() {
+            return new Promise((resolve, reject) => {
+                httpModule.request({
+                    url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                    },
+                }).then(async(response) => {
+                    resolve(response);
+                }, (e) => {
+                    console.error(e);
+                    reject(e);
+                });
+            });
+        }
+
+        async function copyContentToLocalFile(requestResponse) {
+            try {
+                const simpleFileName = await that.getGoogleDriveFileSimpleNameWithExtension(fileId);
+
+                const tempFileData = requestResponse['content'].toFile();
+                const tempFilePath = tempFileData.path;
+
+                const tempFile = fileSystemModule.File.fromPath(tempFilePath);
+                const copiedFilePath = fileSystemModule.path.join(destinationPath, simpleFileName);
+                const copiedFile = fileSystemModule.File.fromPath(copiedFilePath);
+
+                tempFile.readText().then((result) => {
+                    copiedFile.writeText(result).then((saveResult) => {
+                        console.log(`File ${simpleFileName} copied with success into folder ${destinationPath}.`);
+                        if (mustNotifyUser) {
+                            const toast = Toast.makeText(localize('copied_cloud_file_in_local_storage', simpleFileName));
+                            toast.show();
+                        }
+                    });
+                });
+            }
+            catch (e) {
+                console.error(e);
+            }
+        }
+
+        // Using the exponentional backoff technic.
+        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
+        for (let waitingTime of waitingTimesSeconds) {
+            try {
+                setTimeout(() => {}, waitingTime * 1000);
+                const response = await baseRequest();
+                const responseIsGood = response.statusCode !== 403;
+                if (responseIsGood) {
+                    await copyContentToLocalFile(response);
+                }
+            }
+            catch (e) {
+                console.error(e);
+                return;
+            }
+        }
     }
 
     downloadGoogleDriveFolderIntoPath({folderId, destinationPath, mustNotifyUser}) {
@@ -214,7 +283,7 @@ export default class GoogleDriveProvider {
             try {
                 const newFolderData = await this._getGoogleDriveFolderElementData(folderId);
                 if (newFolderData.mimeType !== 'application/vnd.google-apps.folder') {
-                    reject('Requested element is not a folder !');
+                    reject(`Requested element ${newFolderData.name} is not a folder !`);
                 }
                 
                 const newFolderName = newFolderData.name;
@@ -228,7 +297,7 @@ export default class GoogleDriveProvider {
                         await this._downloadGoogleDriveFolderElement(element.id, newFolderPath);
                     }
                     catch (e) {
-                        reject(e);
+                        console.error(e);
                     }
                 });
 
@@ -240,6 +309,7 @@ export default class GoogleDriveProvider {
                 resolve();
             }
             catch (err) {
+                console.error(err);
                 reject(err);
             }
         });
@@ -261,26 +331,48 @@ export default class GoogleDriveProvider {
                 resolve();
             }
             catch (e) {
+                console.error(e);
                 reject(e);
             }
         });
     }
 
-    _getGoogleDriveFolderElementData(elementId) {
-        return new Promise((resolve, reject) => {
-            const fields = 'id,name,mimeType';
-            httpModule.request({
-                url: `https://www.googleapis.com/drive/v3/files/${elementId}?fields=${fields}`,
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
-                },
-            }).then((response) => {
-                resolve(response['content'].toJSON());
-            }, (e) => {
-                reject(e);
+    async _getGoogleDriveFolderElementData(elementId) {
+        const that = this;
+        function baseRequest() {
+            return new Promise((resolve, reject) => {
+                const fields = 'id,name,mimeType';
+                httpModule.request({
+                    url: `https://www.googleapis.com/drive/v3/files/${elementId}?fields=${fields}`,
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                    },
+                }).then((response) => {
+                    resolve(response);
+                }, (e) => {
+                    console.error(e);
+                    reject(e);
+                });
             });
-        });
+        }
+        
+        // Using the exponentional backoff technic.
+        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
+        for (let waitingTime of waitingTimesSeconds) {
+            try {
+                setTimeout(() => {}, waitingTime * 1000);
+                const response = await baseRequest();
+                const responseIsGood = response.statusCode !== 403;
+                if (responseIsGood) {
+                    return response['content'].toJSON();
+                }
+            }
+            catch (e) {
+                console.error(e);
+                return;
+            }
+        }
     }
 
     _escapeHtml(string) {
