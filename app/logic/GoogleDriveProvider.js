@@ -157,10 +157,13 @@ export default class GoogleDriveProvider {
         }
         
         // Using the exponentional backoff technic.
-        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
-        for (let waitingTime of waitingTimesSeconds) {
+        let waitingTimesMs = []
+        for (let i = 0; i < 30; i++){
+            waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
+        }
+        for (let waitingTime of waitingTimesMs) {
             try {
-                setTimeout(() => {}, waitingTime * 1000);
+                setTimeout(() => {}, waitingTime);
                 const response = await baseRequest();
                 const responseIsGood = response.statusCode !== 403;
                 if (responseIsGood) {
@@ -169,10 +172,10 @@ export default class GoogleDriveProvider {
             }
             catch (e) {
                 console.error(e);
-                return;
             }
         }
 
+        console.error(`Failed to get Google Drive elements of folder ${folderId}`);
     }
 
     async getGoogleDriveFileSimpleNameWithExtension(fileId) {
@@ -197,10 +200,13 @@ export default class GoogleDriveProvider {
         }
 
         // Using the exponentional backoff technic.
-        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
-        for (let waitingTime of waitingTimesSeconds) {
+        let waitingTimesMs = []
+        for (let i = 0; i < 30; i++){
+            waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
+        }
+        for (let waitingTime of waitingTimesMs) {
             try {
-                setTimeout(() => {}, waitingTime * 1000);
+                setTimeout(() => {}, waitingTime);
                 const response = await baseRequest();
                 const responseIsGood = response.statusCode !== 403;
                 if (responseIsGood) {
@@ -209,10 +215,10 @@ export default class GoogleDriveProvider {
             }
             catch (e) {
                 console.error(e);
-                return;
             }
         }
 
+        console.error(`Failed to get name of Google Drive element ${fileId}`);
     }
 
     async downloadGoogleDriveFileIntoPath({fileId, destinationPath, mustNotifyUser}) {
@@ -237,7 +243,6 @@ export default class GoogleDriveProvider {
         async function copyContentToLocalFile(requestResponse) {
             try {
                 const simpleFileName = await that.getGoogleDriveFileSimpleNameWithExtension(fileId);
-
                 const tempFileData = requestResponse['content'].toFile();
                 const tempFilePath = tempFileData.path;
 
@@ -261,10 +266,13 @@ export default class GoogleDriveProvider {
         }
 
         // Using the exponentional backoff technic.
-        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
-        for (let waitingTime of waitingTimesSeconds) {
+        let waitingTimesMs = []
+        for (let i = 0; i < 30; i++){
+            waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
+        }
+        for (let waitingTime of waitingTimesMs) {
             try {
-                setTimeout(() => {}, waitingTime * 1000);
+                setTimeout(() => {}, waitingTime);
                 const response = await baseRequest();
                 const responseIsGood = response.statusCode !== 403;
                 if (responseIsGood) {
@@ -273,9 +281,10 @@ export default class GoogleDriveProvider {
             }
             catch (e) {
                 console.error(e);
-                return;
             }
         }
+
+        console.error(`Failed to download Google Drive file ${fileId}`);
     }
 
     downloadGoogleDriveFolderIntoPath({folderId, destinationPath, mustNotifyUser}) {
@@ -358,10 +367,13 @@ export default class GoogleDriveProvider {
         }
         
         // Using the exponentional backoff technic.
-        const waitingTimesSeconds = [0, 1, 2, 4, 8, 16];
-        for (let waitingTime of waitingTimesSeconds) {
+        let waitingTimesMs = []
+        for (let i = 0; i < 30; i++){
+            waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
+        }
+        for (let waitingTime of waitingTimesMs) {
             try {
-                setTimeout(() => {}, waitingTime * 1000);
+                setTimeout(() => {}, waitingTime);
                 const response = await baseRequest();
                 const responseIsGood = response.statusCode !== 403;
                 if (responseIsGood) {
@@ -370,9 +382,10 @@ export default class GoogleDriveProvider {
             }
             catch (e) {
                 console.error(e);
-                return;
             }
         }
+
+        console.error(`Failed to get Google Drive data of element ${elementId}`);
     }
 
     _escapeHtml(string) {
