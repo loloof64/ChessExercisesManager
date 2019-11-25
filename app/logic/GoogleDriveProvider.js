@@ -155,8 +155,9 @@ export default class GoogleDriveProvider {
                 });
             });
         }
-        
-        // Using the exponentional backoff technic.
+    
+
+        // Retries as many times as needed
         let waitingTimesMs = []
         for (let i = 0; i < 30; i++){
             waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
@@ -199,7 +200,7 @@ export default class GoogleDriveProvider {
             });
         }
 
-        // Using the exponentional backoff technic.
+        // Retries as many times as needed
         let waitingTimesMs = []
         for (let i = 0; i < 30; i++){
             waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
@@ -221,7 +222,7 @@ export default class GoogleDriveProvider {
         console.error(`Failed to get name of Google Drive element ${fileId}`);
     }
 
-    async downloadGoogleDriveFileIntoPath({fileId, destinationPath, mustNotifyUser}) {
+    async downloadGoogleDriveFileIntoPath({fileId, destinationPath, mustNotifyUser, overwrite}) {
         const that = this;
         function baseRequest() {
             return new Promise((resolve, reject) => {
@@ -243,6 +244,11 @@ export default class GoogleDriveProvider {
         async function copyContentToLocalFile(requestResponse) {
             try {
                 const simpleFileName = await that.getGoogleDriveFileSimpleNameWithExtension(fileId);
+                
+                const filePath = fileSystemModule.path.join(destinationPath, simpleFileName);
+                const fileAlreadyExists = fileSystemModule.File.exists(filePath);
+                if (fileAlreadyExists && !overwrite) return;
+
                 const tempFileData = requestResponse['content'].toFile();
                 const tempFilePath = tempFileData.path;
 
@@ -265,7 +271,7 @@ export default class GoogleDriveProvider {
             }
         }
 
-        // Using the exponentional backoff technic.
+        // Retries as many times as needed
         let waitingTimesMs = []
         for (let i = 0; i < 30; i++){
             waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
@@ -365,8 +371,9 @@ export default class GoogleDriveProvider {
                 });
             });
         }
-        
-        // Using the exponentional backoff technic.
+    
+
+        // Retries as many times as needed
         let waitingTimesMs = []
         for (let i = 0; i < 30; i++){
             waitingTimesMs.push(parseInt(1000 + 5000*Math.random()));
