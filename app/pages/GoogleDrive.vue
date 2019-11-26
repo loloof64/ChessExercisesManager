@@ -41,6 +41,7 @@
                     icon="res://refreshbutton"
                     @tap="_refreshFolder()"
                 />
+                <ActivityIndicator :busy="busy" />
             </GridLayout>
         </StackLayout>
 
@@ -68,6 +69,7 @@ export default {
     },
     data() {
         return {
+            busy: false,
             explorerItems: [],
             parentFoldersIds: [],
             parentFoldersNames: [],
@@ -99,16 +101,19 @@ export default {
                     this.parentFoldersNames.push(item.name);
                 }
             }
-            else { // this.mainActionMode === DOWNLOAD_MODE
+            else { /* this.mainActionMode === DOWNLOAD_MODE */
                 try {
+                    this.busy = true;
                     if (isAFolder) {
                         await this.googleDriveProvider.downloadGoogleDriveFolderIntoPath({folderId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
                     }
                     else {
                         await this.googleDriveProvider.downloadGoogleDriveFileIntoPath({fileId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
                     }
+                    this.busy = false;
                 }
                 catch (e) {
+                    this.busy = false;
                     console.error(e);
                 }
             }
