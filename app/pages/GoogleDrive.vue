@@ -15,7 +15,7 @@
                             <StackLayout orientation="horizontal">
                                 <Image v-if="_isFolder(item)" src="res://folder" class="type_thumbnail" />
                                 <Image v-else src="res://file" class="type_thumbnail" />
-                                <Label :text="item.name" class="item_label" />
+                                <Label :text="item.name" class="item_label" textWrap="true" />
                             </StackLayout>
                         </v-template>
                     </ListView>
