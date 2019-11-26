@@ -85,7 +85,7 @@ export default {
         await this.googleDriveProvider.loginGoogleDriveIfNeeded();
         const data = await this.googleDriveProvider.getGoogleDriveRootFiles();
 
-        this.explorerItems = data['content'].toJSON()['files'];
+        this.explorerItems = data;
     },
     methods: {
         _isFolder(item) {
