@@ -309,6 +309,7 @@ export default class GoogleDriveProvider {
                 const responseIsGood = response.statusCode !== 403;
                 if (responseIsGood) {
                     await copyContentToLocalFile(response);
+                    return;
                 }
             }
             catch (e) {
