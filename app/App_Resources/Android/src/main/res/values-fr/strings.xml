@@ -3,6 +3,8 @@
   <string name="sample_kppp_kppp">"Roi+3Pions/Roi+3Pions"</string>
   <string name="sample_kp_kpp">"Roi+Pion/Roi+2Pions"</string>
   <string name="sample_krr_k">"Roi+2Tours/Roi"</string>
+  <string name="google_drive_credentials_expired_message">"La connexion a expirée. Veuillez vous déconnecter et vous reconnecter."</string>
+  <string name="google_drive_credentials_expired_title">"Expiration de la connexion"</string>
   <string name="google_drive_exit_confirmation_message_normal">"Voulez-vous vraiment quitter l\'explorateur Google Drive ?"</string>
   <string name="google_drive_exit_confirmation_message_download">"Un téléchargement est encore en cours, voulez-vous vraiment quitter l\'explorateur Google Drive ? (Le resultat du téléchargement risque d\'être incomplet)"</string>
   <string name="exit_confirmation_title">"Quitter ?"</string>

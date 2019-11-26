@@ -5,6 +5,8 @@ const Toast = require("nativescript-toast");
 import { TnsOAuthClient } from "nativescript-oauth2";
 import { localize } from "nativescript-localize";
 
+const CREDENTIALS_EXPIRED = 'Credentials expired';
+
 export default class GoogleDriveProvider {
 
     loginGoogleDriveIfNeeded() {
@@ -125,7 +127,13 @@ export default class GoogleDriveProvider {
                     Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
                 },
             }).then((response) => {
-                resolve(response['content'].toJSON()['files']);
+                const credentialsExpired = response.statusCode === 401;
+                if (credentialsExpired) {
+                    reject(CREDENTIALS_EXPIRED);
+                }
+                else {
+                    resolve(response['content'].toJSON()['files']);
+                }
             }, (e) => {
                 console.error(e);
                 reject(e);
@@ -148,7 +156,13 @@ export default class GoogleDriveProvider {
                         Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
                     },
                 }).then((response) => {
-                    resolve(response);
+                    const credentialsExpired = response.statusCode === 401;
+                    if (credentialsExpired) {
+                        reject(CREDENTIALS_EXPIRED);
+                    }
+                    else {
+                        resolve(response);
+                    }
                 }, (e) => {
                     console.error(e);
                     reject(e);
@@ -192,7 +206,13 @@ export default class GoogleDriveProvider {
                         Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
                     },
                 }).then((response) => {
-                    resolve(response);
+                    const credentialsExpired = response.statusCode === 401;
+                    if (credentialsExpired) {
+                        reject(CREDENTIALS_EXPIRED);
+                    }
+                    else {
+                        resolve(response);
+                    }
                 }, (e) => {
                     console.error(e);
                     reject(e);
@@ -233,7 +253,13 @@ export default class GoogleDriveProvider {
                         Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
                     },
                 }).then(async(response) => {
-                    resolve(response);
+                    const credentialsExpired = response.statusCode === 401;
+                    if (credentialsExpired) {
+                        reject(CREDENTIALS_EXPIRED);
+                    }
+                    else {
+                        resolve(response);
+                    }
                 }, (e) => {
                     console.error(e);
                     reject(e);
@@ -375,7 +401,13 @@ export default class GoogleDriveProvider {
                         Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
                     },
                 }).then((response) => {
-                    resolve(response);
+                    const credentialsExpired = response.statusCode === 401;
+                    if (credentialsExpired) {
+                        reject(CREDENTIALS_EXPIRED);
+                    }
+                    else {
+                        resolve(response);
+                    }
                 }, (e) => {
                     console.error(e);
                     reject(e);

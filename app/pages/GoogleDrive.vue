@@ -60,6 +60,7 @@ Vue.filter("L", localize);
 
 const EXPLORE_MODE = 'explore';
 const DOWNLOAD_MODE = 'donwload';
+const CREDENTIALS_EXPIRED = 'Credentials expired';
 
 export default {
     props: {
@@ -81,11 +82,23 @@ export default {
         }
     },
     async mounted() {
-        this.$refs['page'].nativeView.addEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationNormal);
-        await this.googleDriveProvider.loginGoogleDriveIfNeeded();
-        const data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+        try {
+            this.$refs['page'].nativeView.addEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationNormal);
+            await this.googleDriveProvider.loginGoogleDriveIfNeeded();
+            const data = await this.googleDriveProvider.getGoogleDriveRootFiles();
 
-        this.explorerItems = data;
+            this.explorerItems = data;
+        }
+        catch (e) {
+            console.error(e);
+            if (e === CREDENTIALS_EXPIRED) {
+                alert({
+                    title: localize('google_drive_credentials_expired_title'),
+                    message: localize('google_drive_credentials_expired_message'),
+                    okButtonText: localize('ok_button')
+                }).then(() => {});
+            }
+        }
     },
     methods: {
         _isFolder(item) {
@@ -115,6 +128,13 @@ export default {
                 }
                 catch (e) {
                     console.error(e);
+                    if (e === CREDENTIALS_EXPIRED) {
+                        alert({
+                            title: localize('google_drive_credentials_expired_title'),
+                            message: localize('google_drive_credentials_expired_message'),
+                            okButtonText: localize('ok_button')
+                        }).then(() => {});
+                    }
                 }
                 this.cancelDownloadBusyMode();
             }
@@ -166,30 +186,54 @@ export default {
             });
         },
         async _goBackFolder() {
-            this.parentFoldersIds.pop();
-            this.parentFoldersNames.pop();
+            try  {
+                this.parentFoldersIds.pop();
+                this.parentFoldersNames.pop();
 
-            let data;
-            
-            if (this.parentFoldersIds.length > 0) {
-                const parentItemId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
-                data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(parentItemId);
+                let data;
+                
+                if (this.parentFoldersIds.length > 0) {
+                    const parentItemId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
+                    data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(parentItemId);
+                }
+                else {
+                    data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+                }
+                this.explorerItems = data;
             }
-            else {
-                data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+            catch (e) {
+                console.error(e);
+                if (e === CREDENTIALS_EXPIRED) {
+                    alert({
+                        title: localize('google_drive_credentials_expired_title'),
+                        message: localize('google_drive_credentials_expired_message'),
+                        okButtonText: localize('ok_button')
+                    }).then(() => {});
+                }
             }
-            this.explorerItems = data;
         },
         async _refreshFolder() {
-            let data;
-            if (this.parentFoldersIds.length === 0) {
-                data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+            try {
+                let data;
+                if (this.parentFoldersIds.length === 0) {
+                    data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+                }
+                else {
+                    const currentFolderId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
+                    data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(currentFolderId);
+                }
+                this.explorerItems = data;
             }
-            else {
-                const currentFolderId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
-                data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(currentFolderId);
+            catch (e) {
+                console.error(e);
+                if (e === CREDENTIALS_EXPIRED) {
+                    alert({
+                        title: localize('google_drive_credentials_expired_title'),
+                        message: localize('google_drive_credentials_expired_message'),
+                        okButtonText: localize('ok_button')
+                    }).then(() => {});
+                }
             }
-            this.explorerItems = data;
         },
         _changeMainActionMode() {
             switch(this.mainActionMode) {

@@ -47,6 +47,8 @@
     "exit_confirmation_title": "Exit ?",
     "google_drive_exit_confirmation_message_download": "A download is still in progress, do you really want to exit Google Drive explorer ? (Download result may be incomplete)",
     "google_drive_exit_confirmation_message_normal": "Do you really want to quit Google Drive explorer ?",
+    "google_drive_credentials_expired_title": "Connection expired",
+    "google_drive_credentials_expired_message": "The connection has expired. Please disconnect and connect again.",
 
     "sample_krr_k": "King+2Rooks/King",
     "sample_kp_kpp": "King+Pawn/King+2Pawns",

@@ -47,6 +47,8 @@
     "exit_confirmation_title": "Quitter ?",
     "google_drive_exit_confirmation_message_download": "Un téléchargement est encore en cours, voulez-vous vraiment quitter l'explorateur Google Drive ? (Le resultat du téléchargement risque d'être incomplet)",
     "google_drive_exit_confirmation_message_normal": "Voulez-vous vraiment quitter l'explorateur Google Drive ?",
+    "google_drive_credentials_expired_title": "Expiration de la connexion",
+    "google_drive_credentials_expired_message": "La connexion a expirée. Veuillez vous déconnecter et vous reconnecter.",
 
     "sample_krr_k": "Roi+2Tours/Roi",
     "sample_kp_kpp": "Roi+Pion/Roi+2Pions",
