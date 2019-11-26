@@ -44,6 +44,9 @@
     "copied_cloud_file_in_local_storage": "Copied file %s in current local folder.",
     "copied_cloud_folder_in_local_storage": "Copied folder %s in current local folder.",
     "failure_copy_cloud_folder_in_local_storage": "Failed to copy folder %s in current local folder !",
+    "exit_confirmation_title": "Exit ?",
+    "google_drive_exit_confirmation_message_download": "A download is still in progress, do you really want to exit Google Drive explorer ? (Download result may be incomplete)",
+    "google_drive_exit_confirmation_message_normal": "Do you really want to quit Google Drive explorer ?",
 
     "sample_krr_k": "King+2Rooks/King",
     "sample_kp_kpp": "King+Pawn/King+2Pawns",

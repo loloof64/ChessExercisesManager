@@ -1,5 +1,5 @@
 <template>
-    <Page class="page">
+    <Page class="page" ref="page">
         <ActionBar class="action-bar action-bar-bg">
             <Label class="action-bar-title" :text="'google_drive_title' | L"></Label>
         </ActionBar>
@@ -52,6 +52,7 @@
 import { localize } from "nativescript-localize";
 import Vue from "nativescript-vue";
 import GoogleDriveProvider from '../logic/GoogleDriveProvider';
+import * as application from "tns-core-modules/application";
 const platformModule = require("tns-core-modules/platform");
 const fileSystemModule = require("tns-core-modules/file-system");
 
@@ -80,6 +81,7 @@ export default {
         }
     },
     async mounted() {
+        this.$refs['page'].nativeView.addEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationNormal);
         await this.googleDriveProvider.loginGoogleDriveIfNeeded();
         const data = await this.googleDriveProvider.getGoogleDriveRootFiles();
 
@@ -102,21 +104,66 @@ export default {
                 }
             }
             else { /* this.mainActionMode === DOWNLOAD_MODE */
+                this.activateDownloadBusyMode();
                 try {
-                    this.busy = true;
                     if (isAFolder) {
                         await this.googleDriveProvider.downloadGoogleDriveFolderIntoPath({folderId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
                     }
                     else {
                         await this.googleDriveProvider.downloadGoogleDriveFileIntoPath({fileId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
                     }
-                    this.busy = false;
                 }
                 catch (e) {
-                    this.busy = false;
                     console.error(e);
                 }
+                this.cancelDownloadBusyMode();
             }
+        },
+        activateDownloadBusyMode() {
+            this.$refs['page'].nativeView.removeEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationNormal);
+            this.$refs['page'].nativeView.addEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationDuringDownload);
+            this.busy = true;
+        },
+        cancelDownloadBusyMode() {
+            this.$refs['page'].nativeView.removeEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationDuringDownload);
+            this.$refs['page'].nativeView.addEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationNormal);
+            this.busy = false;
+        },
+        askForExitConfirmationDuringDownload() {
+            confirm({
+                title: localize('exit_confirmation_title'),
+                message: localize('google_drive_exit_confirmation_message_download'),
+                okButtonText: localize('ok_button'),
+                cancelButtonText: localize('cancel_button')
+            }).then(result => {
+                if (result) {
+                    this.$navigator.navigate('/home', {
+                        transition: {
+                            name:'slide',
+                            duration: 200
+                        },
+                        clearHistory: true,
+                    });
+                }
+            });
+        },
+        askForExitConfirmationNormal() {
+            confirm({
+                title: localize('exit_confirmation_title'),
+                message: localize('google_drive_exit_confirmation_message_normal'),
+                okButtonText: localize('ok_button'),
+                cancelButtonText: localize('cancel_button')
+            }).then(result => {
+                if (result) {
+                    this.$navigator.navigate('/home', {
+                        transition: {
+                            name:'slide',
+                            duration: 200
+                        },
+                        clearHistory: true,
+                    });
+                }
+            });
         },
         async _goBackFolder() {
             this.parentFoldersIds.pop();

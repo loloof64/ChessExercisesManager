@@ -3,6 +3,9 @@
   <string name="sample_kppp_kppp">"King+3Pawns/King+3Pawns"</string>
   <string name="sample_kp_kpp">"King+Pawn/King+2Pawns"</string>
   <string name="sample_krr_k">"King+2Rooks/King"</string>
+  <string name="google_drive_exit_confirmation_message_normal">"Do you really want to quit Google Drive explorer ?"</string>
+  <string name="google_drive_exit_confirmation_message_download">"A download is still in progress, do you really want to exit Google Drive explorer ? (Download result may be incomplete)"</string>
+  <string name="exit_confirmation_title">"Exit ?"</string>
   <string name="failure_copy_cloud_folder_in_local_storage">"Failed to copy folder %1$s in current local folder !"</string>
   <string name="copied_cloud_folder_in_local_storage">"Copied folder %1$s in current local folder."</string>
   <string name="copied_cloud_file_in_local_storage">"Copied file %1$s in current local folder."</string>

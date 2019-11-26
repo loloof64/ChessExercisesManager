@@ -44,6 +44,9 @@
     "copied_cloud_file_in_local_storage": "Fichier %s copié dans le dossier local courant.",
     "copied_cloud_folder_in_local_storage": "Dossier %s copié dans le dossier local courant.",
     "failure_copy_cloud_folder_in_local_storage": "Echec de copie du dossier %s dans le dossier local courant !",
+    "exit_confirmation_title": "Quitter ?",
+    "google_drive_exit_confirmation_message_download": "Un téléchargement est encore en cours, voulez-vous vraiment quitter l'explorateur Google Drive ? (Le resultat du téléchargement risque d'être incomplet)",
+    "google_drive_exit_confirmation_message_normal": "Voulez-vous vraiment quitter l'explorateur Google Drive ?",
 
     "sample_krr_k": "Roi+2Tours/Roi",
     "sample_kp_kpp": "Roi+Pion/Roi+2Pions",
