@@ -43,6 +43,7 @@
     "google_drive_title": "Google Drive",
     "copied_cloud_file_in_local_storage": "Fichier %s copié dans le dossier local courant.",
     "copied_cloud_folder_in_local_storage": "Dossier %s copié dans le dossier local courant.",
+    "failure_copy_cloud_folder_in_local_storage": "Echec de copie du dossier %s dans le dossier local courant !",
 
     "sample_krr_k": "Roi+2Tours/Roi",
     "sample_kp_kpp": "Roi+Pion/Roi+2Pions",

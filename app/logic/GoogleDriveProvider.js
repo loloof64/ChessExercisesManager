@@ -307,21 +307,32 @@ export default class GoogleDriveProvider {
 
                 const folderElements = await this.getGoogleDriveInnerFolderFiles(folderId);
                 
-                folderElements.forEach(async element => {
-                    try {
-                        await this._downloadGoogleDriveFolderElement(element.id, newFolderPath);
-                    }
-                    catch (e) {
-                        console.error(e);
-                    }
+                const folderElementsRequests = folderElements.map(element => {
+                    return this._downloadGoogleDriveFolderElement(element.id, newFolderPath);
                 });
 
-                console.log(`Folder ${newFolderName} copied with success in ${destinationPath}`);
-                if (mustNotifyUser) {
-                    const toast = Toast.makeText(localize('copied_cloud_folder_in_local_storage', newFolderName));
-                    toast.show();
-                }              
-                resolve();
+                const elementsCount = folderElements.length;
+                const result = await Promise.all(folderElementsRequests);
+                const successCount = result.reduce((accum, value) => {
+                    return value ? accum + 1 : accum;
+                }, 0);
+
+                if (successCount === elementsCount) {
+                    console.log(`Folder ${newFolderName} copied with success in ${destinationPath}`);
+                    if (mustNotifyUser) {
+                        const toast = Toast.makeText(localize('copied_cloud_folder_in_local_storage', newFolderName));
+                        toast.show();
+                    }              
+                    resolve();
+                }
+                else{
+                    console.log(`Failed to copy folder ${newFolderName} in ${destinationPath}`);
+                    if (mustNotifyUser) {
+                        const toast = Toast.makeText(localize('failure_copy_cloud_folder_in_local_storage', newFolderName));
+                        toast.show();
+                    }   
+                    reject(e);
+                }
             }
             catch (err) {
                 console.error(err);
@@ -343,7 +354,7 @@ export default class GoogleDriveProvider {
                     await this.downloadGoogleDriveFileIntoPath({fileId: elementId, destinationPath, mustNotifyUser: false});
                 }
 
-                resolve();
+                resolve(true);
             }
             catch (e) {
                 console.error(e);
