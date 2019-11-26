@@ -35,6 +35,10 @@
     "delete_file_title": "Delete file ?",
     "delete_folder_message": "Do you really want to delete folder %s ?",
     "delete_file_message": "Do you really want to delete file %s ?",
+    "rename_folder_title": "Rename the folder",
+    "rename_file_title": "Rename the file",
+    "failed_to_rename_file": "Failed to rename file !",
+    "failed_to_rename_folder": "Failed to rename folder !",
 
     "no_internet_title": "No internet connection",
     "no_internet_message": "No internet connection : you must resolve this in order to use this feature.",

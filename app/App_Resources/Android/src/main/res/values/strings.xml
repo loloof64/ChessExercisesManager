@@ -16,6 +16,10 @@
   <string name="logout_account_title">"Logout from your account ?"</string>
   <string name="no_internet_message">"No internet connection : you must resolve this in order to use this feature."</string>
   <string name="no_internet_title">"No internet connection"</string>
+  <string name="failed_to_rename_folder">"Failed to rename folder !"</string>
+  <string name="failed_to_rename_file">"Failed to rename file !"</string>
+  <string name="rename_file_title">"Rename the file"</string>
+  <string name="rename_folder_title">"Rename the folder"</string>
   <string name="delete_file_message">"Do you really want to delete file %1$s ?"</string>
   <string name="delete_folder_message">"Do you really want to delete folder %1$s ?"</string>
   <string name="delete_file_title">"Delete file ?"</string>

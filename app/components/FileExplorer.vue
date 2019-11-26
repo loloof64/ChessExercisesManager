@@ -64,6 +64,7 @@
     Vue.filter("L", localize);
 
     const EXPLORE_MODE = 'explore';
+    const RENAME_MODE = 'rename';
     const DELETE_MODE = 'delete';
 
     export default {
@@ -98,6 +99,47 @@
                     else {
                         this._playGame(explorerItem.path);
                     }
+                }
+                else if (this.mainActionMode === RENAME_MODE) {
+                    prompt({
+                        title: localize(explorerItem.folder ? 'rename_folder_title' : 'rename_file_title'),
+                        okButtonText: localize('ok_button'),
+                        cancelButtonText: localize('cancel_button'),
+                        defaultText: explorerItem.name,
+                    }).then(result => {
+                        if (result.result) {
+                            const newName = result.text;
+
+                            if (explorerItem.folder) {
+                                const oldFolder = this.currentFolder.getFolder(explorerItem.name);
+
+                                oldFolder.rename(newName).then((res) => {
+                                    this.updateItems();
+                                })
+                                .catch((err) => {
+                                    console.error(err);
+                                    alert({
+                                        message: localize('failed_to_rename_folder'),
+                                        okButtonText: localize('ok_button')
+                                    }).then(() => {});
+                                });
+                            }
+                            else {
+                                const oldFile = this.currentFolder.getFile(explorerItem.name);
+                                const newFileName = newName.endsWith('.pgn') ? newName : newName+'.pgn';
+                                oldFile.rename(newName).then((res) => {
+                                    this.updateItems();
+                                })
+                                .catch((err) => {
+                                    console.error(err);
+                                    alert({
+                                        message: localize('failed_to_rename_file'),
+                                        okButtonText: localize('ok_button')
+                                    }).then(() => {});
+                                });
+                            }
+                        }
+                    });
                 }
                 else if (this.mainActionMode === DELETE_MODE) {
                     const itemName = explorerItem.name;
@@ -273,7 +315,8 @@
 
             _changeMainActionMode() {
                 switch (this.mainActionMode) {
-                    case EXPLORE_MODE: this.mainActionMode = DELETE_MODE; break;
+                    case EXPLORE_MODE: this.mainActionMode = RENAME_MODE; break;
+                    case RENAME_MODE: this.mainActionMode = DELETE_MODE; break;
                     case DELETE_MODE: this.mainActionMode = EXPLORE_MODE; break;
                     default: this.mainActionMode = EXPLORE_MODE;
                 }
@@ -303,6 +346,7 @@
             mainActionModeColor() {
                 switch (this.mainActionMode) {
                     case EXPLORE_MODE: return 'green';
+                    case RENAME_MODE: return 'yellow';
                     case DELETE_MODE: return 'red';
                     default: return 'green';
                 }
@@ -311,6 +355,7 @@
             mainActionModeIcon() {
                 switch (this.mainActionMode) {
                     case EXPLORE_MODE: return 'res://eye';
+                    case RENAME_MODE: return 'res://edit';
                     case DELETE_MODE: return 'res://delete';
                     default: return 'res://eye';
                 }

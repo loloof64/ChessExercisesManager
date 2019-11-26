@@ -15,3 +15,4 @@ Please follow [Alexander Ziskind video](https://www.youtube.com/watch?v=Ix0bXZey
 * logout by dmitri13
 * eye, go-back-arrow, refresh-button by FreePik
 * trash from Kiranshastry
+* edit by Smashicons
