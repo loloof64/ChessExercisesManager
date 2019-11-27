@@ -29,6 +29,10 @@
     "custom_exercises": "Custom",
     "custom_exercises_root": "exercises://",
 
+    "online_storage": "Online storage",
+    "connect_to_google_drive": "Access Google Drive",
+    "disconnect_from_google_drive": "Disconnect from Google Drive",
+
     "new_folder_title": "New folder",
     "new_folder_message": "Folder name ?",
     "delete_folder_title": "Delete folder ?",

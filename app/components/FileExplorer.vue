@@ -23,14 +23,7 @@
                 :visibility="_goBackFolderVisibility"
             />
             <Fab
-                class="fab-button hr vt"
-                backgroundColor="purple"
-                icon="res://logout"
-                @tap="_logoutGoogleDrive()"
-                :visibility="isLoggedInGoogleDrive ? 'visible': 'collapse'"
-            />
-            <Fab
-                class="fab-button hl vb"
+                class="fab-button hr vb"
                 backgroundColor="blue"
                 icon="res://folder"
                 @tap="_createNewFolder()"
@@ -40,12 +33,6 @@
                 :backgroundColor="mainActionModeColor"
                 :icon="mainActionModeIcon"
                 @tap="_changeMainActionMode()"
-            />
-            <Fab
-                class="fab-button hr vb"
-                backgroundColor="yellowgreen"
-                icon="res://download"
-                @tap="_accessGoogleDrive()"
             />
             <ActivityIndicator :busy="generatingPosition" row="0" col="0" />
         </GridLayout>
@@ -337,6 +324,24 @@
                             this.updateItems();
                             console.log('Created folder '+name+' in current folder.');
                         }
+                    }
+                });
+            },
+
+            cloudMenu() {
+                action(
+                    localize("online_storage"),
+                    localize("cancel_button"),
+                    [
+                        localize("connect_to_google_drive"),
+                        localize("disconnect_from_google_drive")
+                    ]
+                ).then(result => {
+                    switch (result) {
+                        case localize('connect_to_google_drive'): this._accessGoogleDrive(); break;
+                        case localize('disconnect_from_google_drive'): this._logoutGoogleDrive(); break;
+                        case localize('cancel_button'): return;
+                        default: return;
                     }
                 });
             }

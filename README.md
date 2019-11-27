@@ -11,8 +11,7 @@ Please follow [Alexander Ziskind video](https://www.youtube.com/watch?v=Ix0bXZey
 
 * bookshelf by Adib Sulthon
 * saw by Skyclick
-* download by Pixel Perfect
-* logout by dmitri13
 * eye, go-back-arrow, refresh-button by FreePik
 * trash from Kiranshastry
 * edit by Smashicons
+* cloud-computing by Prosymbols

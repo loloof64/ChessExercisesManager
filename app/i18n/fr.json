@@ -29,6 +29,10 @@
     "custom_exercises": "Personnels",
     "custom_exercises_root": "exercices://",
 
+    "online_storage": "Stockage en ligne",
+    "connect_to_google_drive": "Accéder à Google Drive",
+    "disconnect_from_google_drive": "Se déconnecter de Google Drive",
+
     "new_folder_title": "Nouveau dossier",
     "new_folder_message": "Nom du nouveau dossier ?",
     "delete_folder_title": "Supprimer dossier ?",

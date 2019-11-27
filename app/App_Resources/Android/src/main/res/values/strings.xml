@@ -26,6 +26,9 @@
   <string name="delete_folder_title">"Delete folder ?"</string>
   <string name="new_folder_message">"Folder name ?"</string>
   <string name="new_folder_title">"New folder"</string>
+  <string name="disconnect_from_google_drive">"Disconnect from Google Drive"</string>
+  <string name="connect_to_google_drive">"Access Google Drive"</string>
+  <string name="online_storage">"Online storage"</string>
   <string name="custom_exercises_root">"exercises://"</string>
   <string name="custom_exercises">"Custom"</string>
   <string name="sample_exercises">"Sample"</string>

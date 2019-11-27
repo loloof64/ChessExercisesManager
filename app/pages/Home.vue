@@ -2,10 +2,17 @@
     <Page class="page" @navigatedTo="onNavigatedTo">
         <ActionBar class="action-bar action-bar-bg">
             <Label class="action-bar-title" :text="'home_title' | L"></Label>
+            <ActionItem 
+                @tap="cloudMenu()"
+                icon="res://cloud" 
+                ios.position="right"
+                android.position="actionBar"
+                :visibility="explorerVisible ? 'visible' : 'collapse'"
+            />
         </ActionBar>
 
         <StackLayout orientation="vertical">
-            <TabView selectedIndex="0" @selectedIndexChange="updateExplorerIfNeeded">
+            <TabView selectedIndex="0" @selectedIndexChange="updateChildrenAndActioBar">
                 <TabViewItem :title="'sample_exercises' | L"
                 iconSource="res://bookshelf">
                     <GridLayout>
@@ -64,6 +71,7 @@
                     },
                 ],
                 busy: false,
+                explorerVisible: false,
             }
         },
         mounted: function(){
@@ -99,10 +107,17 @@
                     })
                 }
             },
-            updateExplorerIfNeeded(event) {
+            updateChildrenAndActioBar(event) {
                 if (event.value === 1) {
                     this.$refs['explorerManager'].updateItems();
+                    this.explorerVisible = true;
                 }
+                else {
+                    this.explorerVisible = false;
+                }
+            },
+            cloudMenu() {
+                this.$refs['explorerManager'].cloudMenu();
             }
         },
         components: {FileExplorer,},
