@@ -2,7 +2,7 @@
   "nativescript": {
     "id": "com.loloof64.ChessExercisesManager",
     "tns-android": {
-      "version": "^6.3.1"
+      "version": "6.3.2"
     },
     "tns-ios": {
       "version": "6.3.0"
