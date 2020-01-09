@@ -7,24 +7,24 @@ import { localize } from "nativescript-localize";
 
 const CREDENTIALS_EXPIRED = 'Credentials expired';
 
-export default class GoogleDriveProvider {
+export default class OneDriveProvider {
 
-    loginGoogleDriveIfNeeded() {
+    loginOneDriveIfNeeded() {
         return new Promise((resolve, reject) => {
-            this.client = new TnsOAuthClient("google");
+            this.client = new TnsOAuthClient("microsoft");
 
-            const noNeedToLoginAgain = this.isLoggedInGoogleDrive();
+            const noNeedToLoginAgain = this.isLoggedInOneDrive();
             if (noNeedToLoginAgain) {
                 const currentAppFolder = fileSystemModule.knownFolders.currentApp();
-                const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
+                const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'one_credentials.cfg');
                 const credentialsFile = fileSystemModule.File.fromPath(credentialsPath);
                 credentialsFile.readText()
                 .then((res) => {
                     const content = JSON.parse(res);
-                    this.googleDriveTokens = content;
+                    this.oneDriveTokens = content;
                     resolve();
                 }).catch((err) => {
-                    console.error('Failed to read Google Drive configuration file !');
+                    console.error('Failed to read One Drive configuration file !');
                     reject(err);
                 });
                 return;
@@ -48,15 +48,15 @@ export default class GoogleDriveProvider {
                     if (error) {
                         reject(error);
                     } else {
-                        this.googleDriveTokens = tokenResult;
+                        this.oneDriveTokens = tokenResult;
 
-                        const credentialsFile = this._getGoogleDriveConfigurationFile();
+                        const credentialsFile = this._getOneDriveConfigurationFile();
 
                         credentialsFile.writeText(JSON.stringify(tokenResult))
                         .then((result) => {
-                            console.log('Successfully written Google Drive access in configuration file.')
+                            console.log('Successfully written One Drive access in configuration file.')
                         }).catch((err) => {
-                            console.error('Failed to save Google Drive access in configuration file !');
+                            console.error('Failed to save One Drive access in configuration file !');
                             reject(err);
                         });
 
@@ -67,22 +67,22 @@ export default class GoogleDriveProvider {
         })
     }
 
-    logoutGoogleDrive() {
+    logoutOneDrive() {
         return new Promise((resolve, reject) => {
-            const credentialsFile = this._getGoogleDriveConfigurationFile();
+            const credentialsFile = this._getOneDriveConfigurationFile();
             credentialsFile.remove()
             .then((res) => {
-                console.log("Google Drive configuration file successfully deleted.");
+                console.log("One Drive configuration file successfully deleted.");
                 resolve();
             }).catch((err) => {
-                reject("Failed to remove Google Drive configuration file !");
+                reject("Failed to remove One Drive configuration file !");
             });
         });
     }
 
-    isLoggedInGoogleDrive() {
+    isLoggedInOneDrive() {
         const currentAppFolder = fileSystemModule.knownFolders.currentApp();
-        const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
+        const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'one_credentials.cfg');
 
         return fileSystemModule.File.exists(credentialsPath);
     }
@@ -90,22 +90,22 @@ export default class GoogleDriveProvider {
     /*
         Access configuration file and creates it if not present.
     */
-    _getGoogleDriveConfigurationFile() {
+    _getOneDriveConfigurationFile() {
         const currentAppFolder = fileSystemModule.knownFolders.currentApp();
-        const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'google_credentials.cfg');
+        const credentialsPath = fileSystemModule.path.join(currentAppFolder.path, 'configuration', 'one_credentials.cfg');
         return fileSystemModule.File.fromPath(credentialsPath);
     }
 
-    logoutGoogleDrive() {
-        this.googleDriveTokens = null;
+    logoutOneDrive() {
+        this.oneDriveTokens = null;
         
-        const credentialsFile = this._getGoogleDriveConfigurationFile();
+        const credentialsFile = this._getOneDriveConfigurationFile();
 
         credentialsFile.remove()
         .then((res) => {
-            console.log('Successfully removed Google Drive crendentials file.');
+            console.log('Successfully removed One Drive crendentials file.');
         }).catch((err) => {
-            console.error('Failed to delete Google Drive credentials file.');
+            console.error('Failed to delete One Drive credentials file.');
             console.error(err);
         });
 
@@ -114,17 +114,17 @@ export default class GoogleDriveProvider {
         }
     }
 
-    getGoogleDriveRootFiles() {
+    getOneDriveRootFiles() {
         return new Promise((resolve, reject) => {
             const order = 'folder,name_natural';
             const fields = 'files(id,name,mimeType,fileExtension)';
-            const filter = this._escapeHtml("trashed = false and 'root' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')");
+            const filter = this._escapeHtml("trashed = false and 'root' in parents and (mimeType = 'application/vnd.one-apps.folder' or fileExtension = 'pgn')");
 
             httpModule.request({
-                url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
+                url: `https://www.oneapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
                 method: "GET",
                 headers: {
-                    Authorization: `Bearer ${this.googleDriveTokens.accessToken}`,
+                    Authorization: `Bearer ${this.oneDriveTokens.accessToken}`,
                 },
             }).then((response) => {
                 const credentialsExpired = response.statusCode === 401;
@@ -141,19 +141,19 @@ export default class GoogleDriveProvider {
         });
     }
 
-    async getGoogleDriveInnerFolderFiles(folderId) {
+    async getOneDriveInnerFolderFiles(folderId) {
         const that = this;
         function baseRequest() {
             return new Promise((resolve, reject) => {
                 const order = 'folder,name_natural';
                 const fields = 'files(id,name,mimeType,fileExtension)';
-                const filter = that._escapeHtml(`trashed = false and '${folderId}' in parents and (mimeType = 'application/vnd.google-apps.folder' or fileExtension = 'pgn')`);
+                const filter = that._escapeHtml(`trashed = false and '${folderId}' in parents and (mimeType = 'application/vnd.one-apps.folder' or fileExtension = 'pgn')`);
     
                 httpModule.request({
-                    url: `https://www.googleapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
+                    url: `https://www.oneapis.com/drive/v3/files?corpora=user&orderBy=${order}&fields=${fields}&q=${filter}`,
                     method: "GET",
                     headers: {
-                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                        Authorization: `Bearer ${that.oneDriveTokens.accessToken}`,
                     },
                 }).then((response) => {
                     const credentialsExpired = response.statusCode === 401;
@@ -190,20 +190,20 @@ export default class GoogleDriveProvider {
             }
         }
 
-        console.error(`Failed to get Google Drive elements of folder ${folderId}`);
+        console.error(`Failed to get One Drive elements of folder ${folderId}`);
     }
 
-    async getGoogleDriveFileSimpleNameWithExtension(fileId) {
+    async getOneDriveFileSimpleNameWithExtension(fileId) {
         const that = this;
         function baseRequest() {
             return new Promise((resolve, reject) => {
                 const fields = 'name';
     
                 httpModule.request({
-                    url: `https://www.googleapis.com/drive/v3/files/${fileId}?fields=${fields}`,
+                    url: `https://www.oneapis.com/drive/v3/files/${fileId}?fields=${fields}`,
                     method: "GET",
                     headers: {
-                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                        Authorization: `Bearer ${that.oneDriveTokens.accessToken}`,
                     },
                 }).then((response) => {
                     const credentialsExpired = response.statusCode === 401;
@@ -239,18 +239,18 @@ export default class GoogleDriveProvider {
             }
         }
 
-        console.error(`Failed to get name of Google Drive element ${fileId}`);
+        console.error(`Failed to get name of One Drive element ${fileId}`);
     }
 
-    async downloadGoogleDriveFileIntoPath({fileId, destinationPath, mustNotifyUser, overwrite}) {
+    async downloadOneDriveFileIntoPath({fileId, destinationPath, mustNotifyUser, overwrite}) {
         const that = this;
         function baseRequest() {
             return new Promise((resolve, reject) => {
                 httpModule.request({
-                    url: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+                    url: `https://www.oneapis.com/drive/v3/files/${fileId}?alt=media`,
                     method: "GET",
                     headers: {
-                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                        Authorization: `Bearer ${that.oneDriveTokens.accessToken}`,
                     },
                 }).then(async(response) => {
                     const credentialsExpired = response.statusCode === 401;
@@ -269,7 +269,7 @@ export default class GoogleDriveProvider {
 
         async function copyContentToLocalFile(requestResponse) {
             try {
-                const simpleFileName = await that.getGoogleDriveFileSimpleNameWithExtension(fileId);
+                const simpleFileName = await that.getOneDriveFileSimpleNameWithExtension(fileId);
                 
                 const filePath = fileSystemModule.path.join(destinationPath, simpleFileName);
                 const fileAlreadyExists = fileSystemModule.File.exists(filePath);
@@ -317,14 +317,14 @@ export default class GoogleDriveProvider {
             }
         }
 
-        console.error(`Failed to download Google Drive file ${fileId}`);
+        console.error(`Failed to download One Drive file ${fileId}`);
     }
 
-    downloadGoogleDriveFolderIntoPath({folderId, destinationPath, mustNotifyUser}) {
+    downloadOneDriveFolderIntoPath({folderId, destinationPath, mustNotifyUser}) {
         return new Promise(async (resolve, reject) => {
             try {
-                const newFolderData = await this._getGoogleDriveFolderElementData(folderId);
-                if (newFolderData.mimeType !== 'application/vnd.google-apps.folder') {
+                const newFolderData = await this._getOneDriveFolderElementData(folderId);
+                if (newFolderData.mimeType !== 'application/vnd.one-apps.folder') {
                     reject(`Requested element ${newFolderData.name} is not a folder !`);
                 }
                 
@@ -332,10 +332,10 @@ export default class GoogleDriveProvider {
                 const newFolderPath = fileSystemModule.path.join(destinationPath, newFolderName);
                 fileSystemModule.Folder.fromPath(newFolderPath); // Creates folder
 
-                const folderElements = await this.getGoogleDriveInnerFolderFiles(folderId);
+                const folderElements = await this.getOneDriveInnerFolderFiles(folderId);
                 
                 const folderElementsRequests = folderElements.map(element => {
-                    return this._downloadGoogleDriveFolderElement(element.id, newFolderPath);
+                    return this._downloadOneDriveFolderElement(element.id, newFolderPath);
                 });
 
                 const elementsCount = folderElements.length;
@@ -368,17 +368,17 @@ export default class GoogleDriveProvider {
         });
     }
 
-    _downloadGoogleDriveFolderElement(elementId, destinationPath) {
+    _downloadOneDriveFolderElement(elementId, destinationPath) {
         return new Promise(async (resolve, reject) => {
             try {
-                const elementData = await this._getGoogleDriveFolderElementData(elementId);
-                const isFolder = elementData.mimeType === 'application/vnd.google-apps.folder';
+                const elementData = await this._getOneDriveFolderElementData(elementId);
+                const isFolder = elementData.mimeType === 'application/vnd.one-apps.folder';
 
                 if (isFolder) {
-                    await this.downloadGoogleDriveFolderIntoPath({folderId: elementId, destinationPath, mustNotifyUser: false});
+                    await this.downloadOneDriveFolderIntoPath({folderId: elementId, destinationPath, mustNotifyUser: false});
                 }
                 else {
-                    await this.downloadGoogleDriveFileIntoPath({fileId: elementId, destinationPath, mustNotifyUser: false});
+                    await this.downloadOneDriveFileIntoPath({fileId: elementId, destinationPath, mustNotifyUser: false});
                 }
 
                 resolve(true);
@@ -390,16 +390,16 @@ export default class GoogleDriveProvider {
         });
     }
 
-    async _getGoogleDriveFolderElementData(elementId) {
+    async _getOneDriveFolderElementData(elementId) {
         const that = this;
         function baseRequest() {
             return new Promise((resolve, reject) => {
                 const fields = 'id,name,mimeType';
                 httpModule.request({
-                    url: `https://www.googleapis.com/drive/v3/files/${elementId}?fields=${fields}`,
+                    url: `https://www.oneapis.com/drive/v3/files/${elementId}?fields=${fields}`,
                     method: "GET",
                     headers: {
-                        Authorization: `Bearer ${that.googleDriveTokens.accessToken}`,
+                        Authorization: `Bearer ${that.oneDriveTokens.accessToken}`,
                     },
                 }).then((response) => {
                     const credentialsExpired = response.statusCode === 401;
@@ -436,7 +436,7 @@ export default class GoogleDriveProvider {
             }
         }
 
-        console.error(`Failed to get Google Drive data of element ${elementId}`);
+        console.error(`Failed to get One Drive data of element ${elementId}`);
     }
 
     _escapeHtml(string) {

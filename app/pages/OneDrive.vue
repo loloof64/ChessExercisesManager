@@ -1,7 +1,7 @@
 <template>
     <Page class="page" ref="page">
         <ActionBar class="action-bar action-bar-bg">
-            <Label class="action-bar-title" :text="'google_drive_title' | L"></Label>
+            <Label class="action-bar-title" :text="'one_drive_title' | L"></Label>
         </ActionBar>
 
         <StackLayout>
@@ -51,7 +51,7 @@
 <script>
 import { localize } from "nativescript-localize";
 import Vue from "nativescript-vue";
-import GoogleDriveProvider from '../logic/GoogleDriveProvider';
+import OneDriveProvider from '../logic/OneDriveProvider';
 import * as application from "tns-core-modules/application";
 const platformModule = require("tns-core-modules/platform");
 const fileSystemModule = require("tns-core-modules/file-system");
@@ -77,15 +77,15 @@ export default {
             parentFoldersNames: [],
             itemsViewHeight: platformModule.screen.mainScreen.heightDIPs - 200,
             explorerPathWidth: platformModule.screen.mainScreen.widthDIPs,
-            googleDriveProvider: new GoogleDriveProvider(),
+            oneDriveProvider: new OneDriveProvider(),
             mainActionMode: EXPLORE_MODE,
         }
     },
     async mounted() {
         try {
             this.$refs['page'].nativeView.addEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationNormal);
-            await this.googleDriveProvider.loginGoogleDriveIfNeeded();
-            const data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+            await this.oneDriveProvider.loginOneDriveIfNeeded();
+            const data = await this.oneDriveProvider.getOneDriveRootFiles();
 
             this.explorerItems = data;
         }
@@ -93,8 +93,8 @@ export default {
             console.error(e);
             if (e === CREDENTIALS_EXPIRED) {
                 alert({
-                    title: localize('google_drive_credentials_expired_title'),
-                    message: localize('google_drive_credentials_expired_message'),
+                    title: localize('one_drive_credentials_expired_title'),
+                    message: localize('one_drive_credentials_expired_message'),
                     okButtonText: localize('ok_button')
                 }).then(() => {});
             }
@@ -102,15 +102,15 @@ export default {
     },
     methods: {
         _isFolder(item) {
-            return item.mimeType === 'application/vnd.google-apps.folder';
+            return item.mimeType === 'application/vnd.one-apps.folder';
         },  
         async _reactToItemTap(event) {
             const item = event.item;
-            const isAFolder = item.mimeType === 'application/vnd.google-apps.folder';
+            const isAFolder = item.mimeType === 'application/vnd.one-apps.folder';
 
             if (this.mainActionMode === EXPLORE_MODE) {
                 if (isAFolder) {
-                    const data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(item.id);
+                    const data = await this.oneDriveProvider.getOneDriveInnerFolderFiles(item.id);
                     this.explorerItems = data;
                     this.parentFoldersIds.push(item.id);
                     this.parentFoldersNames.push(item.name);
@@ -120,18 +120,18 @@ export default {
                 this.activateDownloadBusyMode();
                 try {
                     if (isAFolder) {
-                        await this.googleDriveProvider.downloadGoogleDriveFolderIntoPath({folderId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
+                        await this.oneDriveProvider.downloadOneDriveFolderIntoPath({folderId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
                     }
                     else {
-                        await this.googleDriveProvider.downloadGoogleDriveFileIntoPath({fileId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
+                        await this.oneDriveProvider.downloadOneDriveFileIntoPath({fileId: item.id, destinationPath: this.currentAppFolderPath, mustNotifyUser: true});
                     }
                 }
                 catch (e) {
                     console.error(e);
                     if (e === CREDENTIALS_EXPIRED) {
                         alert({
-                            title: localize('google_drive_credentials_expired_title'),
-                            message: localize('google_drive_credentials_expired_message'),
+                            title: localize('one_drive_credentials_expired_title'),
+                            message: localize('one_drive_credentials_expired_message'),
                             okButtonText: localize('ok_button')
                         }).then(() => {});
                     }
@@ -152,7 +152,7 @@ export default {
         askForExitConfirmationDuringDownload() {
             confirm({
                 title: localize('exit_confirmation_title'),
-                message: localize('google_drive_exit_confirmation_message_download'),
+                message: localize('one_drive_exit_confirmation_message_download'),
                 okButtonText: localize('ok_button'),
                 cancelButtonText: localize('cancel_button')
             }).then(result => {
@@ -170,7 +170,7 @@ export default {
         askForExitConfirmationNormal() {
             confirm({
                 title: localize('exit_confirmation_title'),
-                message: localize('google_drive_exit_confirmation_message_normal'),
+                message: localize('one_drive_exit_confirmation_message_normal'),
                 okButtonText: localize('ok_button'),
                 cancelButtonText: localize('cancel_button')
             }).then(result => {
@@ -194,10 +194,10 @@ export default {
                 
                 if (this.parentFoldersIds.length > 0) {
                     const parentItemId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
-                    data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(parentItemId);
+                    data = await this.oneDriveProvider.getOneDriveInnerFolderFiles(parentItemId);
                 }
                 else {
-                    data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+                    data = await this.oneDriveProvider.getOneDriveRootFiles();
                 }
                 this.explorerItems = data;
             }
@@ -205,8 +205,8 @@ export default {
                 console.error(e);
                 if (e === CREDENTIALS_EXPIRED) {
                     alert({
-                        title: localize('google_drive_credentials_expired_title'),
-                        message: localize('google_drive_credentials_expired_message'),
+                        title: localize('one_drive_credentials_expired_title'),
+                        message: localize('one_drive_credentials_expired_message'),
                         okButtonText: localize('ok_button')
                     }).then(() => {});
                 }
@@ -216,11 +216,11 @@ export default {
             try {
                 let data;
                 if (this.parentFoldersIds.length === 0) {
-                    data = await this.googleDriveProvider.getGoogleDriveRootFiles();
+                    data = await this.oneDriveProvider.getOneDriveRootFiles();
                 }
                 else {
                     const currentFolderId = this.parentFoldersIds[this.parentFoldersIds.length - 1];
-                    data = await this.googleDriveProvider.getGoogleDriveInnerFolderFiles(currentFolderId);
+                    data = await this.oneDriveProvider.getOneDriveInnerFolderFiles(currentFolderId);
                 }
                 this.explorerItems = data;
             }
@@ -228,8 +228,8 @@ export default {
                 console.error(e);
                 if (e === CREDENTIALS_EXPIRED) {
                     alert({
-                        title: localize('google_drive_credentials_expired_title'),
-                        message: localize('google_drive_credentials_expired_message'),
+                        title: localize('one_drive_credentials_expired_title'),
+                        message: localize('one_drive_credentials_expired_message'),
                         okButtonText: localize('ok_button')
                     }).then(() => {});
                 }

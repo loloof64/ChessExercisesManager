@@ -1,22 +1,14 @@
 import { configureTnsOAuth } from "nativescript-oauth2";
+import * as secrets from './api_secrets.json';
 
 import { 
-    TnsOaProviderGoogle,
+    TnsOaProviderMicrosoft,
   } from "nativescript-oauth2/providers";
 
-export function configureOAuthProviderGoogle() {
-    const googleProviderOptions = {
-        openIdSupport: "oid-full",
-        clientId:
-        "27447891325-qhmmuc2qpckum7k1sf91vk8277subv27.apps.googleusercontent.com",
-        redirectUri:
-        "com.googleusercontent.apps.27447891325-qhmmuc2qpckum7k1sf91vk8277subv27:/auth",
-        urlScheme:
-        "com.googleusercontent.apps.27447891325-qhmmuc2qpckum7k1sf91vk8277subv27",
-        scopes: ["email", "https://www.googleapis.com/auth/drive.readonly"]
-    };
+export function configureOAuthProviderOneDrive() {
+    const microsoftProviderOptions = secrets.one_drive;
 
-    const googleProvider = new TnsOaProviderGoogle(googleProviderOptions);
+    const microsoftProvider = new TnsOaProviderMicrosoft(microsoftProviderOptions);
     
-    configureTnsOAuth([googleProvider]);
+    configureTnsOAuth([microsoftProvider]);
 }

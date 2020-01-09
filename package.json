@@ -2,7 +2,7 @@
   "nativescript": {
     "id": "com.loloof64.ChessExercisesManager",
     "tns-android": {
-      "version": "6.3.2"
+      "version": "6.3.1"
     },
     "tns-ios": {
       "version": "6.3.0"
@@ -17,7 +17,7 @@
     "chess.js": "^0.10.2",
     "nativescript-canvas": "^2.1.9",
     "nativescript-localize": "^4.2.0",
-    "nativescript-oauth2": "^2.2.2",
+    "nativescript-oauth2": "^2.3.1",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-toast": "^2.0.0",
     "nativescript-vue": "~2.4.0",

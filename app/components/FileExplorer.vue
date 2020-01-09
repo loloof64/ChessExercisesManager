@@ -45,7 +45,7 @@
     const platformModule = require("tns-core-modules/platform");
     const fileSystemModule = require("tns-core-modules/file-system");
 
-    import GoogleDriveProvider from '../logic/GoogleDriveProvider';
+    import OneDriveProvider from '../logic/OneDriveProvider';
     import ExerciceLoader from '../logic/ExerciceLoader';
 
     Vue.filter("L", localize);
@@ -64,8 +64,8 @@
                 currentFolder: undefined,
                 exercisesRootFolder: undefined,
                 generatingPosition: false,
-                googleDriveProvider: new GoogleDriveProvider(),
-                isLoggedInGoogleDrive: false,
+                oneDriveProvider: new OneDriveProvider(),
+                isLoggedInOneDrive: false,
                 mainActionMode: EXPLORE_MODE,
             }
         },
@@ -75,7 +75,7 @@
             this.exercisesRootFolder = rootFolder;
             this.currentFolder = rootFolder;
             this.updateItems();
-            this.isLoggedInGoogleDrive = this.googleDriveProvider.isLoggedInGoogleDrive();
+            this.isLoggedInOneDrive = this.oneDriveProvider.isLoggedInOneDrive();
         },
         methods: {
             _onExplorerTap(explorerItem) {
@@ -262,11 +262,11 @@
                 }
             },
 
-            async _accessGoogleDrive() {
+            async _accessOneDrive() {
                 try {
-                    await this.googleDriveProvider.loginGoogleDriveIfNeeded();
-                    this.isLoggedInGoogleDrive = true;
-                    this.$navigator.navigate('/google_drive', {
+                    await this.oneDriveProvider.loginOneDriveIfNeeded();
+                    this.isLoggedInOneDrive = true;
+                    this.$navigator.navigate('/one_drive', {
                         transition: {
                             name:'slide',
                             duration: 200,
@@ -281,7 +281,7 @@
                 }
             },
 
-            _logoutGoogleDrive() {
+            _logoutOneDrive() {
                 confirm({
                     title: localize('logout_account_title'),
                     message: localize('logout_account_message'),
@@ -290,8 +290,8 @@
                 }).then(async result => {
                     if (result) {
                         try {
-                            await this.googleDriveProvider.logoutGoogleDrive();
-                            this.isLoggedInGoogleDrive = false;
+                            await this.oneDriveProvider.logoutOneDrive();
+                            this.isLoggedInOneDrive = false;
                         }
                         catch (e) {
                             console.error(e);
@@ -333,13 +333,13 @@
                     localize("online_storage"),
                     localize("cancel_button"),
                     [
-                        localize("connect_to_google_drive"),
-                        localize("disconnect_from_google_drive")
+                        localize("connect_to_one_drive"),
+                        localize("disconnect_from_one_drive")
                     ]
                 ).then(result => {
                     switch (result) {
-                        case localize('connect_to_google_drive'): this._accessGoogleDrive(); break;
-                        case localize('disconnect_from_google_drive'): this._logoutGoogleDrive(); break;
+                        case localize('connect_to_one_drive'): this._accessOneDrive(); break;
+                        case localize('disconnect_from_one_drive'): this._logoutOneDrive(); break;
                         case localize('cancel_button'): return;
                         default: return;
                     }

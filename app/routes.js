@@ -1,6 +1,6 @@
 import Home from './pages/Home';
 import Game from './pages/Game';
-import GoogleDrive from './pages/GoogleDrive';
+import OneDrive from './pages/OneDrive';
 
 export const routes = {
     '/home': {
@@ -9,7 +9,7 @@ export const routes = {
     '/game': {
         component: Game,
     },
-    '/google_drive': {
-        component: GoogleDrive,
+    '/one_drive': {
+        component: OneDrive,
     }
 };

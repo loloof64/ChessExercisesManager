@@ -1,9 +1,9 @@
 import Vue from "nativescript-vue";
 Vue.config.silent = true;
 
-import { configureOAuthProviderGoogle } from './logic/OAuthProviders';
+import { configureOAuthProviderOneDrive } from './logic/OAuthProviders';
 
-configureOAuthProviderGoogle();
+configureOAuthProviderOneDrive();
 
 import Navigator from 'nativescript-vue-navigator';
 import {routes} from './routes';
