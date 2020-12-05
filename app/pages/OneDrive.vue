@@ -20,7 +20,7 @@
                         </v-template>
                     </ListView>
                 </ScrollView>
-                <Fab
+                <fab
                     class="fab-button hl vb"
                     backgroundColor="yellow"
                     icon="res://gobackarrow"
@@ -28,14 +28,14 @@
                     :visibility="_goBackFolderVisibility"
                 />
 
-                <Fab
+                <fab
                     class="fab-button hc vb"
                     :backgroundColor="mainActionModeColor"
                     :icon="mainActionModeIcon"
                     @tap="_changeMainActionMode()"
                 />
 
-                <Fab
+                <fab
                     class="fab-button hr vb"
                     backgroundColor="lightblue"
                     icon="res://refreshbutton"
@@ -53,7 +53,7 @@ import { localize } from "nativescript-localize";
 import Vue from "nativescript-vue";
 import OneDriveProvider from '../logic/OneDriveProvider';
 import * as application from "tns-core-modules/application";
-const platformModule = require("tns-core-modules/platform");
+import { Screen } from "@nativescript/core";
 const fileSystemModule = require("tns-core-modules/file-system");
 
 Vue.filter("L", localize);
@@ -75,13 +75,15 @@ export default {
             explorerItems: [],
             parentFoldersIds: [],
             parentFoldersNames: [],
-            itemsViewHeight: platformModule.screen.mainScreen.heightDIPs - 200,
-            explorerPathWidth: platformModule.screen.mainScreen.widthDIPs,
+            itemsViewHeight: undefined,
+            explorerPathWidth: undefined,
             oneDriveProvider: new OneDriveProvider(),
             mainActionMode: EXPLORE_MODE,
         }
     },
     async mounted() {
+        this.itemsViewHeight = Screen.mainScreen.heightDIPs - 200;
+        this.explorerPathWidth = Screen.mainScreen.widthDIPs;
         try {
             this.$refs['page'].nativeView.addEventListener(application.AndroidApplication.activityBackPressedEvent, this.askForExitConfirmationNormal);
             await this.oneDriveProvider.loginOneDriveIfNeeded();

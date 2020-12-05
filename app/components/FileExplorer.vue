@@ -15,20 +15,20 @@
                     </v-template>
                 </ListView>
             </ScrollView>
-            <Fab
+            <fab
                 class="fab-button hl vt"
                 backgroundColor="yellow"
                 icon="res://gobackarrow"
                 @tap="_goBackFolder()"
                 :visibility="_goBackFolderVisibility"
             />
-            <Fab
+            <fab
                 class="fab-button hr vb"
                 backgroundColor="blue"
                 icon="res://folder"
                 @tap="_createNewFolder()"
             />
-            <Fab
+            <fab
                 class="fab-button hc vb"
                 :backgroundColor="mainActionModeColor"
                 :icon="mainActionModeIcon"
@@ -42,7 +42,7 @@
 <script>
     import { localize } from "nativescript-localize";
     import Vue from "nativescript-vue";
-    const platformModule = require("tns-core-modules/platform");
+    import { Screen, isAndroid, isIOS, Device } from "@nativescript/core";
     const fileSystemModule = require("tns-core-modules/file-system");
 
     import OneDriveProvider from '../logic/OneDriveProvider';
@@ -59,8 +59,8 @@
             return {
                 explorerPath: '',
                 explorerItems: [],
-                exercisesViewHeight: platformModule.screen.mainScreen.heightDIPs - 260,
-                explorerPathWidth: platformModule.screen.mainScreen.widthDIPs,
+                exercisesViewHeight: undefined,
+                explorerPathWidth: undefined,
                 currentFolder: undefined,
                 exercisesRootFolder: undefined,
                 generatingPosition: false,
@@ -75,6 +75,8 @@
             this.exercisesRootFolder = rootFolder;
             this.currentFolder = rootFolder;
             this.updateItems();
+            this.exercisesViewHeight = Screen.mainScreen.heightDIPs - 260;
+            this.explorerPathWidth = Screen.mainScreen.widthDIPs;
             this.isLoggedInOneDrive = this.oneDriveProvider.isLoggedInOneDrive();
         },
         methods: {
@@ -194,13 +196,13 @@
             */
             _getLocale() {
                 let lang;  
-                if (platformModule.isAndroid) {
+                if (isAndroid) {
                     lang = java.util.Locale.getDefault().getLanguage();
                 }
-                if (platformModule.isIOS) {
+                if (isIOS) {
                     lang = NSLocale.preferredLanguages.firstObject;
                 } else {
-                    platformModule.device.language;
+                    Device.language;
                 }
 
                 return lang;

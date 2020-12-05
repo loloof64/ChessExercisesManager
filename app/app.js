@@ -1,9 +1,6 @@
 import Vue from "nativescript-vue";
-Vue.config.silent = true;
+Vue.config.silent = false;
 
-import { configureOAuthProviderOneDrive } from './logic/OAuthProviders';
-
-configureOAuthProviderOneDrive();
 
 import Navigator from 'nativescript-vue-navigator';
 import {routes} from './routes';
