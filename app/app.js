@@ -1,5 +1,5 @@
 import Vue from "nativescript-vue";
-Vue.config.silent = false;
+Vue.config.silent = true;
 
 
 import Navigator from 'nativescript-vue-navigator';

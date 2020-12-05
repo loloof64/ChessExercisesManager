@@ -305,7 +305,8 @@ module.exports = env => {
               patterns: [
                 { from: 'assets/**', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
                 { from: 'fonts/**', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
-                { from: '**/*.+(jpg|png)', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } }
+                { from: '**/*.+(jpg|png)', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
+                { from: "sample_exercises/**", globOptions: { dot: false, ...copyIgnore }},
               ],
             }),
             new nsWebpack.GenerateNativeScriptEntryPointsPlugin("bundle"),
