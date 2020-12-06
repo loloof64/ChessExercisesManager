@@ -9,7 +9,7 @@
   >
     <WebViewExt
       dock="center"
-      src="~/components/chessboard/stockfish/index.html"
+      src="~/assets/stockfish/index.html"
       width="0"
       height="0"
       row="0"

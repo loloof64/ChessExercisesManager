@@ -6,6 +6,7 @@ export default class ExerciseLoader {
         const currentAppFolder = fileSystemModule.knownFolders.currentApp();
         const path = fileSystemModule.path.join(
             currentAppFolder.path,
+            'assets',
             "sample_exercises",
             scriptFileName
         );

@@ -298,7 +298,7 @@ module.exports = env => {
             // Remove all files from the out dir.
             new CleanWebpackPlugin({ 
               cleanOnceBeforeBuildPatterns: itemsToClean,
-              verbose: !!verbose
+              verbose: !!verbose    
             }),
             // Copy assets
             new CopyWebpackPlugin({
@@ -306,7 +306,6 @@ module.exports = env => {
                 { from: 'assets/**', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
                 { from: 'fonts/**', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
                 { from: '**/*.+(jpg|png)', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
-                { from: "sample_exercises/**", globOptions: { dot: false, ...copyIgnore }},
               ],
             }),
             new nsWebpack.GenerateNativeScriptEntryPointsPlugin("bundle"),
