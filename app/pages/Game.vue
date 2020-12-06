@@ -76,7 +76,7 @@
     import Chessboard from '../components/chessboard/Chessboard';
     import PlayerType from '../components/chessboard/PlayerType';
     import History from '../components/History';
-    const platformModule = require("tns-core-modules/platform");
+    import { Screen } from "@nativescript/core";
     import { localize } from "nativescript-localize";
     import Vue from "nativescript-vue";
 
@@ -157,8 +157,8 @@
         },
         computed: {
             boardWidth() {
-                const screenWidth = platformModule.screen.mainScreen.widthDIPs;
-                const screenHeight = platformModule.screen.mainScreen.heightDIPs;
+                const screenWidth = Screen.mainScreen.widthDIPs;
+                const screenHeight = Screen.mainScreen.heightDIPs;
 
                 return screenWidth < screenHeight ? screenWidth : screenHeight;
             }

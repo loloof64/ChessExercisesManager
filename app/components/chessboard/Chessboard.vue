@@ -16,11 +16,11 @@
       col="0"
       @loadFinished="onWebViewLoaded"
     />
-    <canvas
+    <CanvasView
       dock="center"
       :width="size"
       :height="size"
-      @ready="canvasReady"
+      @draw="draw"
       ref="canvas"
       row="0"
       col="0"
@@ -101,7 +101,6 @@
 
 <script>
 import "@nota/nativescript-webview-ext/vue";
-import {Canvas} from '@nativescript/canvas';
 import Chess from "chess.js";
 import PlayerType from "./PlayerType";
 
@@ -167,9 +166,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  components: {
-    Canvas,
   },
   data() {
     return {
@@ -721,8 +717,8 @@ export default {
         this.$emit("historyselection", this.historyCursorIndex);
       }
     },
-    canvasReady(event) {
-      const { canvas } = event.object;
+    drawRect(event) {
+      const { canvas } = event;
 
       this._drawBackground(canvas);
       this._drawCoordinates(canvas);

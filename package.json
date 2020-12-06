@@ -3,7 +3,7 @@
   "license": "Apache-2.0",
   "repository": "https://github.com/loloof64/ChessExercisesManager",
   "dependencies": {
-    "@nativescript/canvas": "^0.9.3",
+    "@nativescript-community/ui-canvas": "^4.0.35",
     "@nativescript/core": "7.0.0",
     "@nativescript/webpack": "3.0.0",
     "@nota/nativescript-webview-ext": "^7.0.1",
@@ -14,7 +14,7 @@
     "nativescript-theme-core": "~1.0.6",
     "nativescript-toast": "^2.0.0",
     "nativescript-vue": "^2.8.3",
-    "nativescript-vue-navigator": "^0.2.0"
+    "nativescript-vue-navigator": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "~7.1.0",
@@ -24,7 +24,7 @@
     "nativescript-dev-typescript": "^0.10.0",
     "nativescript-vue-template-compiler": "^2.8.3",
     "node-sass": "^4.13.1",
-    "vue-loader": "15.9.3"
+    "vue-loader": "^15.9.5"
   },
   "gitHead": "1964ea9e8ca1a0518e0d6370781eedcf6c23db42",
   "readme": "README.md",
