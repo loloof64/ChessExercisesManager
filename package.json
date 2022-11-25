@@ -5,7 +5,7 @@
   "dependencies": {
     "@nativescript-community/ui-canvas": "^4.0.35",
     "@nativescript/core": "7.0.0",
-    "@nativescript/webpack": "3.0.0",
+    "@nativescript/webpack": "5.0.10",
     "@nota/nativescript-webview-ext": "^7.0.1",
     "@nstudio/nativescript-floatingactionbutton": "^3.0.4",
     "chess.js": "^0.10.2",
